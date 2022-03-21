@@ -1,3 +1,3 @@
-import ReactState from './ReactState';
+import createState from './createState';
 
-export { ReactState };
+export { createState };
