@@ -1,10 +1,10 @@
-import * as React from 'react';
+import { ReactNode } from 'react';
 
 interface IProps {
   thing: string;
 }
 
-function ReactState(props: IProps): React.ReactNode {
+function ReactState(props: IProps): ReactNode {
   return <div>Hello {props.thing}!</div>;
 }
 

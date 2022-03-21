@@ -1,0 +1,77 @@
+{
+  "name": "@open-tech-world/react-state",
+  "version": "0.1.0",
+  "description": "A shared state management library for React.",
+  "keywords": [
+    "react",
+    "state",
+    "store",
+    "manager"
+  ],
+  "author": {
+    "name": "Thanga Ganapathy",
+    "email": "ganapathy888@gmail.com",
+    "url": "https://thanga-ganapathy.github.io"
+  },
+  "license": "MIT",
+  "homepage": "https://react-app-state.pages.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/open-tech-world/react-state.git"
+  },
+  "source": "src/index.ts",
+  "main": "lib/main.js",
+  "module": "lib/module.js",
+  "types": "lib/types.d.ts",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "scripts": {
+    "build": "parcel build",
+    "test": "jest"
+  },
+  "files": [
+    "lib"
+  ],
+  "browserslist": {
+    "production": [
+      "last 2 chrome versions",
+      "last 2 edge versions",
+      "last 2 firefox versions",
+      "last 2 safari versions",
+      "maintained node versions"
+    ],
+    "development": [
+      "current node"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.8",
+    "@babel/preset-env": "^7.16.11",
+    "@parcel/transformer-typescript-types": "2.3.2",
+    "@testing-library/jest-dom": "^5.16.2",
+    "@testing-library/react": "^12.1.4",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.4.1",
+    "@types/react": "^17.0.41",
+    "@typescript-eslint/eslint-plugin": "^5.16.0",
+    "@typescript-eslint/parser": "^5.16.0",
+    "eslint": "^8.11.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-jest": "^26.1.2",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "jest": "^27.5.1",
+    "parcel": "^2.3.2",
+    "prettier": "^2.6.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "typescript": "4.6.2"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-dom": "*"
+  }
+}
