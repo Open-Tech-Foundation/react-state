@@ -7,12 +7,12 @@ type setStateFn = (state: State) => Partial<State>;
 type listenerFn = () => void;
 
 export default function createState<State>(initialState: State): hookFn {
-  const state: State = initialState;
+  let state: State = initialState;
   const listerners = new Set<listenerFn>();
 
   const setState = (fn: setStateFn) => {
     const obj = fn(state as unknown as object);
-    Object.assign(state, obj);
+    state = Object.assign({}, state, obj);
     listerners.forEach((l) => l());
   };
 
@@ -21,17 +21,21 @@ export default function createState<State>(initialState: State): hookFn {
   };
 
   return (selector, set = false) => {
-    const [, dispatch] = useReducer((s) => s + 1, 0);
     if (typeof selector != 'function') {
-      return setState;
+      if (set) {
+        return setState;
+      }
+
+      return;
     }
+    const [, dispatch] = useReducer((s) => s + 1, 0);
     const selectorValueRef = useRef(selector(state));
 
     useEffect(() => {
       const listener = () => {
-        const v = selector(state);
-        if (v !== selectorValueRef.current) {
-          selectorValueRef.current = v;
+        const sv = selector(state);
+        if (sv !== selectorValueRef.current) {
+          selectorValueRef.current = sv;
           dispatch();
         }
       };
