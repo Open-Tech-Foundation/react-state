@@ -67,7 +67,7 @@ describe('createState', () => {
 
     const SetCounter = () => {
       console.log('Render SetCounter');
-      const setState = useAppState(null, true);
+      const setState = useAppState(null, { set: true });
 
       return (
         <div>
@@ -137,10 +137,9 @@ describe('createState', () => {
   it('Changes the initial value', () => {
     const useAppState = createState({ counter: 0 });
     const App = () => {
-      const [counter, setAppState] = useAppState(
-        (state) => state.counter,
-        true
-      );
+      const [counter, setAppState] = useAppState((state) => state.counter, {
+        set: true,
+      });
       return (
         <div>
           <div>Counter: {counter}</div>
@@ -163,10 +162,9 @@ describe('createState', () => {
   test('The same state value in two components using the hook', () => {
     const useAppState = createState({ counter: 0 });
     const Counter = () => {
-      const [counter, setAppState] = useAppState(
-        (state) => state.counter,
-        true
-      );
+      const [counter, setAppState] = useAppState((state) => state.counter, {
+        set: true,
+      });
       return (
         <div>
           <div>Counter: {counter}</div>
@@ -207,10 +205,9 @@ describe('createState', () => {
 
     const Counter = () => {
       console.log('Rendering Counter');
-      const [counter, setAppState] = useAppState(
-        (state) => state.counter,
-        true
-      );
+      const [counter, setAppState] = useAppState((state) => state.counter, {
+        set: true,
+      });
       return (
         <div>
           <div>Counter: {counter}</div>
@@ -227,7 +224,9 @@ describe('createState', () => {
 
     const User = () => {
       console.log('Rendering User');
-      const [user, setAppState] = useAppState((state) => state.user, true);
+      const [user, setAppState] = useAppState((state) => state.user, {
+        set: true,
+      });
       return (
         <div>
           <div>{user.name ? `Welcome ${user.name}` : 'Welcome Guest'}</div>

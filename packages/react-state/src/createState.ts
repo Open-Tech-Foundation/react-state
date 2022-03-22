@@ -1,8 +1,17 @@
 import { useEffect, useReducer, useRef } from 'react';
+import shallowDiffObjs from './shallowDiffObjs';
 
 type State = object;
 
-type hookFn = (selector: Partial<State>, boolean) => Partial<State>;
+interface SelectorConfig {
+  set: boolean;
+  shallow: boolean;
+}
+
+type hookFn = (
+  selector: Partial<State> | Record<string, Pick<State, keyof State>>,
+  config?: Partial<SelectorConfig>
+) => Partial<State>;
 type setStateFn = (state: State) => Partial<State>;
 type listenerFn = () => void;
 
@@ -20,9 +29,9 @@ export default function createState<State>(initialState: State): hookFn {
     listerners.add(lf);
   };
 
-  return (selector, set = false) => {
+  return (selector, config) => {
     if (typeof selector != 'function') {
-      if (set) {
+      if (config?.set) {
         return setState;
       }
 
@@ -34,6 +43,13 @@ export default function createState<State>(initialState: State): hookFn {
     useEffect(() => {
       const listener = () => {
         const sv = selector(state);
+        if (config?.shallow) {
+          if (!shallowDiffObjs(selectorValueRef.current, sv)) {
+            selectorValueRef.current = sv;
+            dispatch();
+          }
+          return;
+        }
         if (sv !== selectorValueRef.current) {
           selectorValueRef.current = sv;
           dispatch();
@@ -41,9 +57,9 @@ export default function createState<State>(initialState: State): hookFn {
       };
 
       subscribe(listener);
-    }, [selector]);
+    }, [selector, config?.shallow]);
 
-    if (set) {
+    if (config?.set) {
       return [selectorValueRef.current, setState];
     }
 
