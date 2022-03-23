@@ -410,4 +410,43 @@ describe('createState', () => {
       expect(logSpy).toBeCalledTimes(5);
     });
   });
+
+  test('Replacing the state instead of merging', async () => {
+    const useAppState = createState({
+      settings: { theme: 'Dark' },
+      user: { name: 'xxx' },
+    });
+    const App = () => {
+      const [{ settings, user }, setAppState] = useAppState(
+        (s) => ({ settings: s.settings, user: s.user }),
+        { set: true, shallow: true }
+      );
+      return (
+        <>
+          <div>Theme: {settings.theme}</div>
+          <div>{user ? `Welcome ${user.name}` : 'Welcome Guest'}</div>
+          <button
+            onClick={() =>
+              setAppState(
+                (s) =>
+                  produce(s, (draft) => {
+                    delete draft.user;
+                  }),
+                true
+              )
+            }
+          >
+            Logout
+          </button>
+        </>
+      );
+    };
+    render(<App />);
+    expect(screen.getByText('Theme: Dark')).toBeInTheDocument();
+    expect(screen.getByText('Welcome xxx')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Logout'));
+    await waitFor(() => {
+      expect(screen.getByText('Welcome Guest')).toBeInTheDocument();
+    });
+  });
 });

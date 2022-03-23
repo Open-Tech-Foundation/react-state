@@ -19,9 +19,9 @@ export default function createState<State>(initialState: State): hookFn {
   let state: State = initialState;
   const listerners = new Set<listenerFn>();
 
-  const setState = (fn: setStateFn) => {
+  const setState = (fn: setStateFn, replace = false) => {
     const obj = fn(state as unknown as object);
-    state = Object.assign({}, state, obj);
+    state = replace ? (obj as unknown as State) : Object.assign({}, state, obj);
     listerners.forEach((l) => l());
   };
 
