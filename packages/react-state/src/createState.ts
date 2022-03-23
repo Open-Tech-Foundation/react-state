@@ -22,7 +22,13 @@ export default function createState<State>(initialState: State): hookFn {
   const setState = (fn: setStateFn, replace = false) => {
     const obj = fn(state as unknown as object);
     state = replace ? (obj as unknown as State) : Object.assign({}, state, obj);
-    listerners.forEach((l) => l());
+    listerners.forEach((l) => {
+      if (l) {
+        l();
+      } else {
+        listerners.delete(l);
+      }
+    });
   };
 
   const subscribe = (lf: listenerFn) => {
