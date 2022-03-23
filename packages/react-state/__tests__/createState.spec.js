@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import produce from 'immer';
 
 import { createState } from '../src';
 
@@ -197,7 +198,7 @@ describe('createState', () => {
     expect(screen.getAllByText(/Counter: 2/)[1]).toBeInTheDocument();
   });
 
-  test('Rendering only the component that selected values changed', () => {
+  test('Rendering only the component that selected values changed', async () => {
     const useAppState = createState({
       counter: 0,
       user: { name: 'xxx', signin: true },
@@ -229,7 +230,7 @@ describe('createState', () => {
       });
       return (
         <div>
-          <div>{user.name ? `Welcome ${user.name}` : 'Welcome Guest'}</div>
+          <div>{user.signin ? `Welcome ${user.name}` : 'Welcome Guest'}</div>
           <button
             onClick={() =>
               setAppState((state) => ({
@@ -260,8 +261,152 @@ describe('createState', () => {
     expect(screen.getByText(/Counter: 1/)).toBeInTheDocument();
     expect(logSpy).toBeCalledTimes(4);
     fireEvent.click(screen.getByText('Logout'));
-    waitFor(() => {
+    await waitFor(() => {
       expect(screen.getByText(/Welcome Guest/)).toBeInTheDocument();
+      expect(logSpy).toBeCalledTimes(5);
+    });
+  });
+
+  it('Constructs a single object with multiple state-picks', () => {
+    const useAppState = createState({
+      products: { mobiles: ['M1', 'M2'], laptops: ['L1'] },
+    });
+
+    const Products = () => {
+      const { mobiles, laptops } = useAppState((s) => ({
+        mobiles: s.products.mobiles,
+        laptops: s.products.laptops,
+      }));
+      return (
+        <div>
+          <div>{mobiles}</div>
+          <div>{laptops}</div>
+        </div>
+      );
+    };
+
+    const App = () => {
+      return (
+        <>
+          <Products />
+        </>
+      );
+    };
+    render(<App />);
+    expect(screen.getByText(/M1/)).toBeInTheDocument();
+    expect(screen.getByText(/M2/)).toBeInTheDocument();
+    expect(screen.getByText(/L1/)).toBeInTheDocument();
+  });
+
+  test('Shallow diff single array for multiple state-picks', async () => {
+    const useAppState = createState({
+      settings: { theme: 'Dark' },
+      products: { mobiles: ['M1', 'M2'], laptops: ['L1'] },
+    });
+
+    const Products = () => {
+      console.log('Render Products');
+
+      const [mobiles, laptops] = useAppState(
+        (s) => [s.products.mobiles, s.products.laptops],
+        { shallow: true }
+      );
+      return (
+        <div>
+          <ul>
+            {mobiles.map((m, i) => (
+              <li key={i}>{m}</li>
+            ))}
+          </ul>
+          <ul>
+            {laptops.map((l, i) => (
+              <li key={i}>{l}</li>
+            ))}
+          </ul>
+        </div>
+      );
+    };
+
+    const CreateProduct = () => {
+      const setState = useAppState(null, { set: true });
+      return (
+        <div>
+          <button
+            onClick={() =>
+              setState((s) =>
+                produce(s, (draft) => {
+                  draft.products.mobiles.push(
+                    'M' + Math.random().toString().slice(-10, -5)
+                  );
+                })
+              )
+            }
+          >
+            Add Mobile
+          </button>
+          <button
+            onClick={() =>
+              setState((s) =>
+                produce(s, (draft) => {
+                  draft.products.laptops.push(
+                    'L' + Math.random().toString().slice(-10, -5)
+                  );
+                })
+              )
+            }
+          >
+            Add Laptop
+          </button>
+        </div>
+      );
+    };
+
+    function Header() {
+      console.log('Render Header');
+      const [settings, setState] = useAppState((s) => s.settings, {
+        set: true,
+      });
+
+      return (
+        <div>
+          Theme: {settings.theme}{' '}
+          <button
+            onClick={() =>
+              setState((s) => ({
+                settings: {
+                  theme: s.settings.theme === 'Dark' ? 'Light' : 'Dark',
+                },
+              }))
+            }
+          >
+            Toggle
+          </button>
+        </div>
+      );
+    }
+
+    const App = () => {
+      return (
+        <>
+          <Header />
+          <Products />
+          <CreateProduct />
+        </>
+      );
+    };
+    render(<App />);
+    expect(screen.getByText(/M1/)).toBeInTheDocument();
+    expect(screen.getByText(/M2/)).toBeInTheDocument();
+    expect(screen.getByText(/L1/)).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Add Mobile'));
+    fireEvent.click(screen.getByText('Add Laptop'));
+    await waitFor(() => {
+      expect(screen.getAllByRole('listitem')).toHaveLength(5);
+      expect(logSpy).toBeCalledTimes(4);
+    });
+    fireEvent.click(screen.getByText('Toggle'));
+    await waitFor(() => {
+      expect(screen.getByText('Theme: Light')).toBeInTheDocument();
       expect(logSpy).toBeCalledTimes(5);
     });
   });
