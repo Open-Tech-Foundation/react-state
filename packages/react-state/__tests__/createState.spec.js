@@ -53,7 +53,7 @@ describe('createState', () => {
     expect(screen.getByText(/Counter: Start/)).toBeInTheDocument();
   });
 
-  test('Set state only hook fn', () => {
+  test('Set state only hook fn', async () => {
     const useAppState = createState({ counter: 0 });
     const Counter = () => {
       console.log('Render Counter');
@@ -95,8 +95,10 @@ describe('createState', () => {
     expect(screen.getByText(/Counter: 0/)).toBeInTheDocument();
     expect(logSpy).toBeCalledTimes(2);
     fireEvent.click(screen.getByText('Increment'));
-    expect(screen.getByText(/Counter: 1/)).toBeInTheDocument();
-    expect(logSpy).toBeCalledTimes(3);
+    await waitFor(() => {
+      expect(screen.getByText(/Counter: 1/)).toBeInTheDocument();
+      expect(logSpy).toBeCalledTimes(3);
+    });
   });
 
   it('Displays the initial value', () => {
@@ -135,7 +137,7 @@ describe('createState', () => {
     expect(screen.getByText('Language: en-us')).toBeInTheDocument();
   });
 
-  it('Changes the initial value', () => {
+  it('Changes the initial value', async () => {
     const useAppState = createState({ counter: 0 });
     const App = () => {
       const [counter, setAppState] = useAppState((state) => state.counter, {
@@ -157,10 +159,12 @@ describe('createState', () => {
     render(<App />);
     expect(screen.getByText(/Counter: 0/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button'));
-    expect(screen.getByText(/Counter: 1/)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/Counter: 1/)).toBeInTheDocument();
+    });
   });
 
-  test('The same state value in two components using the hook', () => {
+  test('The same state value in two components using the hook', async () => {
     const useAppState = createState({ counter: 0 });
     const Counter = () => {
       const [counter, setAppState] = useAppState((state) => state.counter, {
@@ -191,11 +195,15 @@ describe('createState', () => {
     expect(screen.getAllByText(/Counter: 0/)[0]).toBeInTheDocument();
     expect(screen.getAllByText(/Counter: 0/)[1]).toBeInTheDocument();
     fireEvent.click(screen.getAllByRole('button')[0]);
-    expect(screen.getAllByText(/Counter: 1/)[0]).toBeInTheDocument();
-    expect(screen.getAllByText(/Counter: 1/)[1]).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getAllByText(/Counter: 1/)[0]).toBeInTheDocument();
+      expect(screen.getAllByText(/Counter: 1/)[1]).toBeInTheDocument();
+    });
     fireEvent.click(screen.getAllByRole('button')[1]);
-    expect(screen.getAllByText(/Counter: 2/)[0]).toBeInTheDocument();
-    expect(screen.getAllByText(/Counter: 2/)[1]).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getAllByText(/Counter: 2/)[0]).toBeInTheDocument();
+      expect(screen.getAllByText(/Counter: 2/)[1]).toBeInTheDocument();
+    });
   });
 
   test('Rendering only the component that selected values changed', async () => {
@@ -258,8 +266,10 @@ describe('createState', () => {
     expect(screen.getByText(/Counter: 0/)).toBeInTheDocument();
     expect(screen.getByText(/Welcome xxx/)).toBeInTheDocument();
     fireEvent.click(screen.getByText('Increment'));
-    expect(screen.getByText(/Counter: 1/)).toBeInTheDocument();
-    expect(logSpy).toBeCalledTimes(4);
+    await waitFor(() => {
+      expect(screen.getByText(/Counter: 1/)).toBeInTheDocument();
+      expect(logSpy).toBeCalledTimes(4);
+    });
     fireEvent.click(screen.getByText('Logout'));
     await waitFor(() => {
       expect(screen.getByText(/Welcome Guest/)).toBeInTheDocument();
@@ -333,12 +343,14 @@ describe('createState', () => {
         <div>
           <button
             onClick={() =>
-              setState((s) =>
-                produce(s, (draft) => {
-                  draft.products.mobiles.push(
-                    'M' + Math.random().toString().slice(-10, -5)
-                  );
-                })
+              setState(
+                (s) =>
+                  produce(s, (draft) => {
+                    draft.products.mobiles.push(
+                      'M' + Math.random().toString().slice(-10, -5)
+                    );
+                  }),
+                true
               )
             }
           >
@@ -346,12 +358,14 @@ describe('createState', () => {
           </button>
           <button
             onClick={() =>
-              setState((s) =>
-                produce(s, (draft) => {
-                  draft.products.laptops.push(
-                    'L' + Math.random().toString().slice(-10, -5)
-                  );
-                })
+              setState(
+                (s) =>
+                  produce(s, (draft) => {
+                    draft.products.laptops.push(
+                      'L' + Math.random().toString().slice(-10, -5)
+                    );
+                  }),
+                true
               )
             }
           >
@@ -398,7 +412,9 @@ describe('createState', () => {
     expect(screen.getByText(/M1/)).toBeInTheDocument();
     expect(screen.getByText(/M2/)).toBeInTheDocument();
     expect(screen.getByText(/L1/)).toBeInTheDocument();
-    fireEvent.click(screen.getByText('Add Mobile'));
+    await waitFor(() => {
+      fireEvent.click(screen.getByText('Add Mobile'));
+    });
     fireEvent.click(screen.getByText('Add Laptop'));
     await waitFor(() => {
       expect(screen.getAllByRole('listitem')).toHaveLength(5);
@@ -447,6 +463,53 @@ describe('createState', () => {
     fireEvent.click(screen.getByText('Logout'));
     await waitFor(() => {
       expect(screen.getByText('Welcome Guest')).toBeInTheDocument();
+    });
+  });
+
+  test('Async actions', async () => {
+    const useCounterState = createState({ counter: 0 });
+
+    function Counter() {
+      console.log('Render Counter');
+      const [counter, set] = useCounterState((state) => state.counter, {
+        set: true,
+      });
+
+      const increment = (value) => {
+        return new Promise((resolve) => {
+          setTimeout(() => resolve(value + 1), 500);
+        });
+      };
+
+      return (
+        <div>
+          <div>Counter: {counter}</div>
+          <button
+            onClick={() =>
+              set(async (s) => ({ counter: await increment(s.counter) }))
+            }
+          >
+            +1
+          </button>
+        </div>
+      );
+    }
+
+    const App = () => {
+      console.log('Render App');
+
+      return (
+        <div>
+          <Counter />
+        </div>
+      );
+    };
+
+    render(<App />);
+    expect(screen.getByText('Counter: 0')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button'));
+    await waitFor(() => {
+      expect(screen.getByText('Counter: 1')).toBeInTheDocument();
     });
   });
 });

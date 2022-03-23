@@ -12,15 +12,15 @@ type hookFn = (
   selector: Partial<State> | Record<string, Pick<State, keyof State>>,
   config?: Partial<SelectorConfig>
 ) => Partial<State>;
-type setStateFn = (state: State) => Partial<State>;
+type setStateFn = (state: State) => Partial<State> | Promise<Partial<State>>;
 type listenerFn = () => void;
 
 export default function createState<State>(initialState: State): hookFn {
   let state: State = initialState;
   const listerners = new Set<listenerFn>();
 
-  const setState = (fn: setStateFn, replace = false) => {
-    const obj = fn(state as unknown as object);
+  const setState = async (fn: setStateFn, replace = false) => {
+    const obj = await fn(state as unknown as object);
     state = replace ? (obj as unknown as State) : Object.assign({}, state, obj);
     listerners.forEach((l) => {
       if (l) {
