@@ -43,7 +43,8 @@ const config = {
         items: [
           {
             href: 'https://github.com/open-tech-world/react-state',
-            label: 'GitHub',
+            // label: 'GitHub',
+            className: 'header-github-link',
             position: 'right',
           },
         ],
