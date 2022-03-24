@@ -6,6 +6,8 @@ name: Build
 on:
   push:
     branches: [ main ]
+    paths-ignore: 
+      - 'website/**' 
   pull_request:
     branches: [ main ]
 
