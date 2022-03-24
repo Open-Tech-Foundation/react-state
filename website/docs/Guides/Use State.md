@@ -19,6 +19,9 @@ function MyComponent() {
   return <div />;
 }
 ```
+:::caution
+Avoid using the hook without a selector.
+:::
 
 ### Hook with default selector
 
