@@ -38,6 +38,6 @@ const useAppState = createState({});
 
 function App() {
   const state = useAppState((s) => s);
-  console.log(state);
+  console.log(state); // {}
 }
 ```

@@ -22,6 +22,8 @@ function MyComponent() {
 
 ### Hook with default selector
 
+It selects everything in the state.
+
 ```ts
 import { createState } from '@open-tech-world/react-state';
 
