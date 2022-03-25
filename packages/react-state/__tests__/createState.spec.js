@@ -338,6 +338,7 @@ describe('createState', () => {
     };
 
     const CreateProduct = () => {
+      console.log('Render CreateProduct');
       const setState = useAppState(null, { set: true });
       return (
         <div>
@@ -418,12 +419,12 @@ describe('createState', () => {
     fireEvent.click(screen.getByText('Add Laptop'));
     await waitFor(() => {
       expect(screen.getAllByRole('listitem')).toHaveLength(5);
-      expect(logSpy).toBeCalledTimes(4);
+      expect(logSpy).toBeCalledTimes(5);
     });
     fireEvent.click(screen.getByText('Toggle'));
     await waitFor(() => {
       expect(screen.getByText('Theme: Light')).toBeInTheDocument();
-      expect(logSpy).toBeCalledTimes(5);
+      expect(logSpy).toBeCalledTimes(6);
     });
   });
 

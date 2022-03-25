@@ -29,7 +29,10 @@
   },
   "scripts": {
     "build": "parcel build",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint src/**",
+    "check": "tsc src/** --noEmit",
+    "ci": "yarn build && yarn test && yarn lint && yarn check"
   },
   "files": [
     "lib"
