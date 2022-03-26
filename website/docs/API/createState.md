@@ -79,7 +79,7 @@ const [state, setState] = useAppState((s) => s, { set: true });
 setState({ theme: 'Light' });
 ```
 
-#### Merge with a function
+#### Merge with function
 
 ```tsx
 const [state, setState] = useAppState((s) => s, { set: true });
@@ -87,7 +87,7 @@ const [state, setState] = useAppState((s) => s, { set: true });
 setState((s) => ({ count: s.count + 1 }));
 ```
 
-#### Replace an object
+#### Replace with object
 
 ```tsx
 const [state, setState] = useAppState((s) => s, { set: true });
@@ -95,7 +95,7 @@ const [state, setState] = useAppState((s) => s, { set: true });
 setState({ user: { id: 'xyz' } }, true);
 ```
 
-#### Replace with a function
+#### Replace with function
 
 ```tsx
 const [state, setState] = useAppState((s) => s, { set: true });
