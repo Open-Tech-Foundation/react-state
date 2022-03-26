@@ -1,9 +1,7 @@
 import { useEffect, useReducer, useRef } from 'react';
 import shallowDiffObjs from './shallowDiffObjs';
 
-type CurrentState<State> = State | Partial<State> | Record<string, unknown>;
-
-interface HookConfig {
+export interface HookConfig {
   set: boolean;
   shallow: boolean;
 }
@@ -13,10 +11,19 @@ type Selector<State, RT> = (state: State) => RT;
 type Hook<State> = {
   (): undefined;
   (selector: null): undefined;
+  (selector: null, config: { set: false }): undefined;
   (selector: null, config: { set: true }): SetState<State>;
   <RT>(selector: Selector<State, RT>): RT;
   <RT>(selector: Selector<State, RT>, config?: { set: false }): RT;
+  <RT>(
+    selector: Selector<State, RT>,
+    config?: { set: false; shallow: true }
+  ): RT;
   <RT>(selector: Selector<State, RT>, config?: { set: true }): [
+    RT,
+    SetState<State>
+  ];
+  <RT>(selector: Selector<State, RT>, config?: { set: true; shallow: true }): [
     RT,
     SetState<State>
   ];
@@ -24,7 +31,7 @@ type Hook<State> = {
 
 type SetStateCallback<State> = (
   state: State
-) => Partial<State> | Promise<Partial<State>> | Record<string, unknown>;
+) => Partial<State> | Promise<Partial<State>>;
 
 type SetState<State> = (
   obj: Partial<State> | SetStateCallback<State>,
@@ -33,18 +40,13 @@ type SetState<State> = (
 
 type listenerFn = () => void;
 
-export default function createState<State>(
-  initialState: State
-): Hook<CurrentState<State>> {
-  let state: CurrentState<State> = initialState;
+export default function createState<State>(initialState: State): Hook<State> {
+  let state: State & Partial<State> = initialState;
   const listerners = new Set<listenerFn>();
 
-  const setState: SetState<CurrentState<State>> = async (
-    obj,
-    replace = false
-  ) => {
+  const setState: SetState<State> = async (obj, replace = false) => {
     const objValue = typeof obj === 'function' ? await obj(state) : obj;
-    state = replace ? objValue : Object.assign({}, state, objValue);
+    state = replace ? (objValue as State) : Object.assign({}, state, objValue);
     listerners.forEach((l) => {
       if (l) {
         l();
@@ -58,9 +60,9 @@ export default function createState<State>(
     listerners.add(lf);
   };
 
-  const useStateHook: Hook<CurrentState<State>> = (
+  const useStateHook: Hook<State> = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    selector?: Selector<typeof state, any> | null,
+    selector?: Selector<State, any> | null,
     config?: Partial<HookConfig>
   ) => {
     const [, dispatch] = useReducer((s) => s + 1, 0);

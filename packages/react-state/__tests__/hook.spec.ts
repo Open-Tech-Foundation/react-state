@@ -3,7 +3,14 @@ import produce from 'immer';
 
 import { createState } from '../src';
 
-const state = {
+interface State {
+  theme: string;
+  count: number;
+  user?: { id: string };
+  fruits: string[];
+}
+
+const state: State = {
   theme: 'Dark',
   count: 5,
   user: { id: 'abc' },
@@ -109,18 +116,18 @@ describe('Hook', () => {
         shallow: true,
       })
     );
-    expect(typeof result.current[1]).toBe('function');
+    expect(typeof result.current?.[1]).toBe('function');
 
-    const setFn = result.current[1];
+    const setFn = result.current?.[1];
 
     act(() => {
-      setFn((s) => ({
+      setFn?.((s) => ({
         fruits: [...s.fruits, 'Banana'],
       }));
     });
 
     await waitForNextUpdate();
-    expect(result.current[0]).toEqual({
+    expect(result.current?.[0]).toEqual({
       user: state.user,
       fruits: [...state.fruits, 'Banana'],
     });
