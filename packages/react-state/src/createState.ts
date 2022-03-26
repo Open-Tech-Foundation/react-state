@@ -59,7 +59,8 @@ export default function createState<State>(
   };
 
   const useStateHook: Hook<CurrentState<State>> = (
-    selector?,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    selector?: Selector<typeof state, any> | null,
     config?: Partial<HookConfig>
   ) => {
     const [, dispatch] = useReducer((s) => s + 1, 0);
@@ -72,7 +73,7 @@ export default function createState<State>(
         return;
       }
       const listener = () => {
-        const sv = selector(state);
+        const sv = selector?.(state);
         if (config?.shallow) {
           if (
             !shallowDiffObjs(
