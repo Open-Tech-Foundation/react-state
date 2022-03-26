@@ -31,7 +31,7 @@
     "build": "parcel build",
     "test": "jest",
     "lint": "eslint src/**",
-    "check": "tsc src/** --noEmit",
+    "check": "tsc",
     "ci": "yarn build && yarn test && yarn lint && yarn check"
   },
   "files": [
