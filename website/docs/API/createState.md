@@ -60,3 +60,45 @@ const [obj, setState] = useAppState((s) => s.obj, { set: true });
 ```tsx
 const {obj1, obj2} = useAppState((s) => {obj1: s.obj1, obj2: s.obj2 }, {shallow: true});
 ```
+
+### Set function
+
+`setState(object | (state) => any, replace = false): Promise<void>`
+
+This function is used change values of the state, and it can merge or replace the state.
+
+This function accepts an object or function as the first argument.
+
+- **replace**: By default, it is `false`. The object returned from the function will be merged into the state, if it is `true`, it will replace the given object in the state.
+
+#### Merge with object
+
+```tsx
+const [state, setState] = useAppState((s) => s, { set: true });
+
+setState({ theme: 'Light' });
+```
+
+#### Merge with a function
+
+```tsx
+const [state, setState] = useAppState((s) => s, { set: true });
+
+setState((s) => ({ count: s.count + 1 }));
+```
+
+#### Replace an object
+
+```tsx
+const [state, setState] = useAppState((s) => s, { set: true });
+
+setState({ user: { id: 'xyz' } }, true);
+```
+
+#### Replace with a function
+
+```tsx
+const [state, setState] = useAppState((s) => s, { set: true });
+
+setState((s) => ({ ...s, user: { id: 'xyz' } }), true);
+```
