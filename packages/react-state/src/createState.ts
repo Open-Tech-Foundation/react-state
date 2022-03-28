@@ -6,9 +6,9 @@ export interface HookConfig {
   shallow: boolean;
 }
 
-type Selector<State, RT> = (state: State) => RT;
+export type Selector<State, RT> = (state: State) => RT;
 
-type Hook<State> = {
+export type Hook<State> = {
   (): undefined;
   (selector: null): undefined;
   (selector: null, config: { set: false }): undefined;
@@ -29,11 +29,11 @@ type Hook<State> = {
   ];
 };
 
-type SetStateCallback<State> = (
+export type SetStateCallback<State> = (
   state: State
 ) => Partial<State> | Promise<Partial<State>>;
 
-type SetState<State> = (
+export type SetState<State> = (
   obj: Partial<State> | SetStateCallback<State>,
   replace?: boolean
 ) => Promise<void>;
