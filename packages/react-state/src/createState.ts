@@ -103,7 +103,7 @@ export default function createState<State>(initialState: State): Hook<State> {
     }
 
     if (config?.set) {
-      return [selectorValueRef.current, setState];
+      return [selectorValueRef.current, setState] as const;
     }
 
     return selectorValueRef.current;
