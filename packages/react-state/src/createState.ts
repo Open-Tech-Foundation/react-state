@@ -27,6 +27,7 @@ export type Hook<State> = {
     RT,
     SetState<State>
   ];
+  <RT>(selector: Selector<State, RT>, config?: { shallow: true }): RT;
 };
 
 export type SetStateCallback<State> = (

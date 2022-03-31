@@ -4,7 +4,7 @@ import produce from 'immer';
 
 import { createState } from '../src';
 
-let logSpy, errorSpy;
+let logSpy: jest.SpyInstance, errorSpy: jest.SpyInstance;
 
 beforeAll(() => {
   logSpy = jest.spyOn(console, 'log').mockImplementation(() => undefined);
@@ -17,42 +17,6 @@ afterAll(() => {
 });
 
 describe('createState', () => {
-  test('Invalid values passed to createState', () => {
-    let useAppState = createState();
-    const App = () => {
-      const counter = useAppState((state) => state.counter);
-      return (
-        <div>
-          <div>Counter: {counter}</div>
-        </div>
-      );
-    };
-    expect(() => render(<App />)).toThrow();
-    useAppState = createState(null);
-    expect(() => render(<App />)).toThrow();
-    useAppState = createState('');
-    render(<App />);
-    expect(screen.getByText(/Counter:/)).toBeInTheDocument();
-    useAppState = createState([]);
-    expect(screen.getByText(/Counter:/)).toBeInTheDocument();
-    useAppState = createState({});
-    expect(screen.getByText(/Counter:/)).toBeInTheDocument();
-  });
-
-  test('Empty hook fn', () => {
-    const useAppState = createState({ counter: 0 });
-    const App = () => {
-      const state = useAppState();
-      return (
-        <div>
-          <div>Counter: {state?.counter || 'Start'}</div>
-        </div>
-      );
-    };
-    render(<App />);
-    expect(screen.getByText(/Counter: Start/)).toBeInTheDocument();
-  });
-
   test('Set state only hook fn', async () => {
     const useAppState = createState({ counter: 0 });
     const Counter = () => {
@@ -429,7 +393,11 @@ describe('createState', () => {
   });
 
   test('Replacing the state instead of merging', async () => {
-    const useAppState = createState({
+    interface State {
+      settings: { theme: string };
+      user?: { name: string };
+    }
+    const useAppState = createState<State>({
       settings: { theme: 'Dark' },
       user: { name: 'xxx' },
     });
@@ -468,7 +436,10 @@ describe('createState', () => {
   });
 
   test('Async actions', async () => {
-    const useCounterState = createState({ counter: 0 });
+    interface State {
+      counter: number;
+    }
+    const useCounterState = createState<State>({ counter: 0 });
 
     function Counter() {
       console.log('Render Counter');
@@ -476,7 +447,7 @@ describe('createState', () => {
         set: true,
       });
 
-      const increment = (value) => {
+      const increment = (value: number): Promise<number> => {
         return new Promise((resolve) => {
           setTimeout(() => resolve(value + 1), 500);
         });
