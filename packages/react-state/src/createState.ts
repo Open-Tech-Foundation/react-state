@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef } from 'react';
+import { useCallback, useEffect, useReducer, useRef } from 'react';
 import shallowDiffObjs from './shallowDiffObjs';
 
 export interface HookConfig {
@@ -6,28 +6,22 @@ export interface HookConfig {
   shallow: boolean;
 }
 
-export type Selector<State, RT> = (state: State) => RT;
+export type Selector<State, T> = (state: State) => T;
 
 export type Hook<State> = {
-  (): undefined;
-  (selector: null): undefined;
-  (selector: null, config: { set: false }): undefined;
+  (selector: null): null;
   (selector: null, config: { set: true }): SetState<State>;
-  <RT>(selector: Selector<State, RT>): RT;
-  <RT>(selector: Selector<State, RT>, config?: { set: false }): RT;
-  <RT>(
-    selector: Selector<State, RT>,
-    config?: { set: false; shallow: true }
-  ): RT;
-  <RT>(selector: Selector<State, RT>, config?: { set: true }): [
-    RT,
+  <T>(selector: Selector<State, T>): T;
+  <T>(selector: Selector<State, T>, config: { set: true }): [
+    T,
     SetState<State>
   ];
-  <RT>(selector: Selector<State, RT>, config?: { set: true; shallow: true }): [
-    RT,
+  <T>(selector: Selector<State, T>, config: { set: false; shallow: true }): T;
+  <T>(selector: Selector<State, T>, config: { set: true; shallow: true }): [
+    T,
     SetState<State>
   ];
-  <RT>(selector: Selector<State, RT>, config?: { shallow: true }): RT;
+  <T>(selector: Selector<State, T>, config: { shallow: true }): T;
 };
 
 export type SetStateCallback<State> = (
@@ -49,11 +43,7 @@ export default function createState<State>(initialState: State): Hook<State> {
     const objValue = typeof obj === 'function' ? await obj(state) : obj;
     state = replace ? (objValue as State) : Object.assign({}, state, objValue);
     listerners.forEach((l) => {
-      if (l) {
-        l();
-      } else {
-        listerners.delete(l);
-      }
+      l();
     });
   };
 
@@ -61,9 +51,12 @@ export default function createState<State>(initialState: State): Hook<State> {
     listerners.add(lf);
   };
 
-  const useStateHook: Hook<State> = (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    selector?: Selector<State, any> | null,
+  const unSubscribe = (lf: listenerFn) => {
+    listerners.delete(lf);
+  };
+
+  const useStateHook: Hook<State> = <ST>(
+    selector: Selector<State, ST> | null,
     config?: Partial<HookConfig>
   ) => {
     const [, dispatch] = useReducer((s) => s + 1, 0);
@@ -71,32 +64,38 @@ export default function createState<State>(initialState: State): Hook<State> {
       typeof selector === 'function' ? selector(state) : null
     );
 
-    useEffect(() => {
-      if (selectorValueRef.current === null) {
+    const listener = useCallback(() => {
+      if (selector === null) {
         return;
       }
-      const listener = () => {
-        const sv = selector?.(state);
-        if (config?.shallow) {
-          if (
-            !shallowDiffObjs(
-              selectorValueRef.current as unknown as object,
-              sv as object
-            )
-          ) {
-            selectorValueRef.current = sv;
-            dispatch();
-          }
-          return;
-        }
-        if (sv !== selectorValueRef.current) {
+      const sv = selector(state);
+      if (config?.shallow) {
+        if (
+          !shallowDiffObjs(
+            selectorValueRef.current as unknown as object,
+            sv as unknown as object
+          )
+        ) {
           selectorValueRef.current = sv;
           dispatch();
         }
-      };
+        return;
+      }
+      if (sv !== selectorValueRef.current) {
+        selectorValueRef.current = sv;
+        dispatch();
+      }
+    }, [config?.shallow, selector]);
 
+    useEffect(() => {
+      if (!selector) {
+        return;
+      }
       subscribe(listener);
-    }, [selector, config?.shallow]);
+      return () => {
+        unSubscribe(listener);
+      };
+    }, [listener, selector]);
 
     if (selectorValueRef.current === null) {
       if (!config?.set) return;

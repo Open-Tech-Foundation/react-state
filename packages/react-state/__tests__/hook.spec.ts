@@ -19,11 +19,6 @@ const state: State = {
 const useAppState = createState(state);
 
 describe('Hook', () => {
-  test('With no arguments', () => {
-    const { result } = renderHook(() => useAppState());
-    expect(result.current).toBeUndefined();
-  });
-
   test('With null selector', () => {
     const { result } = renderHook(() => useAppState(null));
     expect(result.current).toBeUndefined();
@@ -31,11 +26,6 @@ describe('Hook', () => {
 
   test('With selector returns null', () => {
     const { result } = renderHook(() => useAppState(() => null));
-    expect(result.current).toBeUndefined();
-  });
-
-  test('Without selector & not to get set fn', () => {
-    const { result } = renderHook(() => useAppState(null, { set: false }));
     expect(result.current).toBeUndefined();
   });
 
@@ -64,11 +54,6 @@ describe('Hook', () => {
   test('Select multiple values as array from the state', () => {
     const { result } = renderHook(() => useAppState((s) => [s.theme, s.count]));
     expect(result.current).toEqual(['Dark', 5]);
-  });
-
-  test('Select state & set config false', () => {
-    const { result } = renderHook(() => useAppState((s) => s, { set: false }));
-    expect(result.current).toEqual(state);
   });
 
   test('Select state & set config true', () => {

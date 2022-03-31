@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import produce from 'immer';
+import { sleep } from '@open-tech-world/js-utils';
 
 import { createState } from '../src';
 
@@ -57,7 +58,6 @@ describe('createState', () => {
     };
     render(<App />);
     expect(screen.getByText(/Counter: 0/)).toBeInTheDocument();
-    expect(logSpy).toBeCalledTimes(2);
     fireEvent.click(screen.getByText('Increment'));
     await waitFor(() => {
       expect(screen.getByText(/Counter: 1/)).toBeInTheDocument();
@@ -380,12 +380,19 @@ describe('createState', () => {
     await waitFor(() => {
       fireEvent.click(screen.getByText('Add Mobile'));
     });
-    fireEvent.click(screen.getByText('Add Laptop'));
+    await sleep(100);
+    await waitFor(() => {
+      fireEvent.click(screen.getByText('Add Laptop'));
+    });
     await waitFor(() => {
       expect(screen.getAllByRole('listitem')).toHaveLength(5);
+    });
+    await waitFor(() => {
       expect(logSpy).toBeCalledTimes(5);
     });
-    fireEvent.click(screen.getByText('Toggle'));
+    await waitFor(() => {
+      fireEvent.click(screen.getByText('Toggle'));
+    });
     await waitFor(() => {
       expect(screen.getByText('Theme: Light')).toBeInTheDocument();
       expect(logSpy).toBeCalledTimes(6);
