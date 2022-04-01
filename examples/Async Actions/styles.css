@@ -1,0 +1,35 @@
+.App {
+  font-family: sans-serif;
+}
+
+.App > h2 {
+  text-align: center;
+}
+
+.search-form {
+  display: flex;
+  justify-content: center;
+}
+
+.search-form button {
+  margin-left: 10px;
+}
+
+.status {
+  font-size: 14px;
+  margin-top: 15px;
+}
+
+.package-list {
+  padding: 25px;
+}
+
+.package {
+  border: 1px gray dashed;
+  margin-bottom: 10px;
+  padding: 15px;
+}
+
+.package > h3 {
+  color: blue;
+}
