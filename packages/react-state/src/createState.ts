@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useRef } from 'react';
+import { useSyncExternalStoreWithSelector } from 'use-sync-external-store/shim/with-selector';
 import shallowDiffObjs from './shallowDiffObjs';
 
 export interface HookConfig {
@@ -33,11 +33,11 @@ export type SetState<State> = (
   replace?: boolean
 ) => Promise<void>;
 
-type listenerFn = () => void;
+type ListenerFn = () => void;
 
 export default function createState<State>(initialState: State): Hook<State> {
-  let state: State & Partial<State> = initialState;
-  const listerners = new Set<listenerFn>();
+  let state: State & Partial<State> = { ...initialState };
+  const listerners = new Set<ListenerFn>();
 
   const setState: SetState<State> = async (obj, replace = false) => {
     const objValue = typeof obj === 'function' ? await obj(state) : obj;
@@ -47,66 +47,35 @@ export default function createState<State>(initialState: State): Hook<State> {
     });
   };
 
-  const subscribe = (lf: listenerFn) => {
+  const subscribe = (lf: ListenerFn) => {
     listerners.add(lf);
-  };
-
-  const unSubscribe = (lf: listenerFn) => {
-    listerners.delete(lf);
+    return () => listerners.delete(lf);
   };
 
   const useStateHook: Hook<State> = <ST>(
     selector: Selector<State, ST> | null,
     config?: Partial<HookConfig>
   ) => {
-    const [, dispatch] = useReducer((s) => s + 1, 0);
-    const selectorValueRef = useRef(
-      typeof selector === 'function' ? selector(state) : null
+    const value = useSyncExternalStoreWithSelector(
+      subscribe,
+      () => state,
+      null,
+      () => selector?.(state),
+      config?.shallow
+        ? (a, b) =>
+            shallowDiffObjs(a as unknown as object, b as unknown as object)
+        : undefined
     );
 
-    const listener = useCallback(() => {
-      if (selector === null) {
-        return;
-      }
-      const sv = selector(state);
-      if (config?.shallow) {
-        if (
-          !shallowDiffObjs(
-            selectorValueRef.current as unknown as object,
-            sv as unknown as object
-          )
-        ) {
-          selectorValueRef.current = sv;
-          dispatch();
-        }
-        return;
-      }
-      if (sv !== selectorValueRef.current) {
-        selectorValueRef.current = sv;
-        dispatch();
-      }
-    }, [config?.shallow, selector]);
-
-    useEffect(() => {
-      if (!selector) {
-        return;
-      }
-      subscribe(listener);
-      return () => {
-        unSubscribe(listener);
-      };
-    }, [listener, selector]);
-
-    if (selectorValueRef.current === null) {
-      if (!config?.set) return;
+    if (selector === null && config?.set) {
       return setState;
     }
 
-    if (config?.set) {
-      return [selectorValueRef.current, setState] as const;
+    if (selector !== null && config?.set) {
+      return [value, setState] as const;
     }
 
-    return selectorValueRef.current;
+    return value;
   };
 
   return useStateHook;

@@ -16,7 +16,7 @@ afterAll(() => {
   errorSpy.mockRestore();
 });
 
-describe('createState', () => {
+describe('createState Sync', () => {
   test('Set state only hook fn', async () => {
     const useAppState = createState({ counter: 0 });
     const Counter = () => {
@@ -83,7 +83,6 @@ describe('createState', () => {
 
   it('Displays the initial value', () => {
     const useAppState = createState({ counter: 0 });
-
     const App = () => {
       const counter = useAppState((state) => state.counter);
       return (
@@ -92,7 +91,7 @@ describe('createState', () => {
         </div>
       );
     };
-    render(<App />);
+    render(<App />, { legacyRoot: true });
     expect(screen.getByText(/Counter: 0/)).toBeInTheDocument();
   });
 
@@ -104,7 +103,6 @@ describe('createState', () => {
     });
     const App = () => {
       const state = useAppState((state) => state);
-
       return (
         <div>
           <div>User: {state.user.name}</div>
@@ -113,7 +111,7 @@ describe('createState', () => {
         </div>
       );
     };
-    render(<App />);
+    render(<App />, { legacyRoot: true });
     expect(screen.getByText('User: xxx')).toBeInTheDocument();
     expect(screen.getByText('Theme: Dark')).toBeInTheDocument();
     expect(screen.getByText('Language: en-us')).toBeInTheDocument();
@@ -125,7 +123,6 @@ describe('createState', () => {
       const [counter, setAppState] = useAppState((state) => state.counter, {
         set: true,
       });
-
       return (
         <div>
           <div>Counter: {counter}</div>
@@ -139,7 +136,7 @@ describe('createState', () => {
         </div>
       );
     };
-    render(<App />);
+    render(<App />, { legacyRoot: true });
     expect(screen.getByText(/Counter: 0/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button'));
     await waitFor(() => {
@@ -174,7 +171,7 @@ describe('createState', () => {
         </>
       );
     };
-    render(<App />);
+    render(<App />, { legacyRoot: true });
     expect(screen.getAllByText(/Counter: 0/)[0]).toBeInTheDocument();
     expect(screen.getAllByText(/Counter: 0/)[1]).toBeInTheDocument();
     fireEvent.click(screen.getAllByRole('button')[0]);
@@ -244,7 +241,7 @@ describe('createState', () => {
         </>
       );
     };
-    render(<App />);
+    render(<App />, { legacyRoot: true });
     expect(logSpy).toBeCalledTimes(3);
     expect(screen.getByText(/Counter: 0/)).toBeInTheDocument();
     expect(screen.getByText(/Welcome xxx/)).toBeInTheDocument();
@@ -270,7 +267,6 @@ describe('createState', () => {
         mobiles: s.products.mobiles,
         laptops: s.products.laptops,
       }));
-
       return (
         <div>
           <div>{mobiles}</div>
@@ -286,7 +282,7 @@ describe('createState', () => {
         </>
       );
     };
-    render(<App />);
+    render(<App />, { legacyRoot: true });
     expect(screen.getByText(/M1/)).toBeInTheDocument();
     expect(screen.getByText(/M2/)).toBeInTheDocument();
     expect(screen.getByText(/L1/)).toBeInTheDocument();
@@ -393,7 +389,7 @@ describe('createState', () => {
         </>
       );
     };
-    render(<App />);
+    render(<App />, { legacyRoot: true });
     expect(screen.getByText(/M1/)).toBeInTheDocument();
     expect(screen.getByText(/M2/)).toBeInTheDocument();
     expect(screen.getByText(/L1/)).toBeInTheDocument();
@@ -452,7 +448,7 @@ describe('createState', () => {
         </>
       );
     };
-    render(<App />);
+    render(<App />, { legacyRoot: true });
     expect(screen.getByText('Theme: Dark')).toBeInTheDocument();
     expect(screen.getByText('Welcome xxx')).toBeInTheDocument();
     fireEvent.click(screen.getByText('Logout'));
@@ -503,7 +499,7 @@ describe('createState', () => {
       );
     };
 
-    render(<App />);
+    render(<App />, { legacyRoot: true });
     expect(screen.getByText('Counter: 0')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button'));
     await waitFor(() => {

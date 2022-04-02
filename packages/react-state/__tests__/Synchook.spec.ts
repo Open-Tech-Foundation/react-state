@@ -18,7 +18,7 @@ const state: State = {
 };
 const useAppState = createState(state);
 
-describe('Hook', () => {
+describe('Sync Hook', () => {
   test('With null selector', () => {
     const { result } = renderHook(() => useAppState(null));
     expect(result.current).toBeUndefined();

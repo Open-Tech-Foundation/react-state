@@ -66,6 +66,7 @@
     "@testing-library/user-event": "^14.0.1",
     "@types/jest": "^27.4.1",
     "@types/react": "^17.0.43",
+    "@types/use-sync-external-store": "^0.0.3",
     "@typescript-eslint/eslint-plugin": "^5.17.0",
     "@typescript-eslint/parser": "^5.17.0",
     "eslint": "^8.12.0",
@@ -81,6 +82,9 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "typescript": "4.6.3"
+  },
+  "dependencies": {
+    "use-sync-external-store": "^1.0.0"
   },
   "peerDependencies": {
     "react": "*",
