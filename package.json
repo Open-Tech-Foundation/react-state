@@ -9,5 +9,6 @@
     "build": "yarn workspace @open-tech-world/react-state build",
     "ci": "yarn workspace @open-tech-world/react-state ci",
     "build:website": "yarn build && yarn workspace website build"
-  }
+  },
+  "version": "0.1.0"
 }
