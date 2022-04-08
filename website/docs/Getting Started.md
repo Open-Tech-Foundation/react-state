@@ -31,13 +31,49 @@ yarn add @open-tech-world/react-state
 
 ## Usage
 
-```ts
+```jsx
 import { createState } from '@open-tech-world/react-state';
 
 const useAppState = createState({});
 
 function App() {
-  const state = useAppState((s) => s);
-  console.log(state); // {}
+  const [state, setState] = useAppState((s) => s, { set: true });
+  console.log(state);
+
+  return (
+    <>
+      <button onClick={() => setState((s) => ({ obj: value }))}>
+        Change State
+      </button>
+    </>
+  );
+}
+```
+
+## Usage (TypeScript)
+
+```tsx
+import { createState } from '@open-tech-world/react-state';
+
+interface AppState {
+  obj1: type1;
+  obj2: type2;
+}
+
+const appState: AppState = { obj1: value, obj2: value };
+
+const useAppState = createState(appState);
+
+function App() {
+  const [state, setState] = useAppState((s) => s, { set: true });
+  console.log(state);
+
+  return (
+    <>
+      <button onClick={() => setState((s) => ({ obj1: newValue }))}>
+        Change State
+      </button>
+    </>
+  );
 }
 ```

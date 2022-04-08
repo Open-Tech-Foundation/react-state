@@ -2,6 +2,12 @@
 sidebar_position: 3
 ---
 
+import {SandBox} from '@open-tech-world/react-examples-sandbox';
+
+import setStateWithObj from '!!raw-loader!@site/src/examples/setStateWithObj';
+import setStateWithFn from '!!raw-loader!@site/src/examples/setStateWithFn';
+import replaceState from '!!raw-loader!@site/src/examples/replaceState';
+
 The set function is used to change the values in the state.
 
 You can get the state `set` function reference by passing an option to `config` object.
@@ -18,38 +24,14 @@ By default, the object returned from the `set` function is `merged` into the sta
 The `set` function can be `sync` or `async`.
 :::
 
-### Change the state's value
+### Set value to the state object using object
 
-```tsx
-import { createState } from '@open-tech-world/react-state';
+<SandBox lib="react-state" code={setStateWithObj} />
 
-const useAppState = createState({ theme: 'Light' });
+### Change the state value using function
 
-function MyComponent() {
-  const [theme, setAppState] = useAppState((s) => s.theme, { set: true });
-  console.log(theme); // Initially "Light" and "Dark" after the button is clicked
-  return (
-    <button onClick={() => setAppState((s) => ({ theme: 'Dark' }))}>
-      Change to Dark
-    </button>
-  );
-}
-```
+<SandBox lib="react-state" code={setStateWithFn} />
 
 ### Replace an object in the state
 
-```tsx
-import { createState } from '@open-tech-world/react-state';
-
-const useAppState = createState({ apples: 5, mangoes: 2, bananas: 7 });
-
-function MyComponent() {
-  const [state, setAppState] = useAppState((s) => s, { set: true });
-  console.log(state); // Initially => { apples: 5, mangoes: 2, bananas: 7 }, After replace => {oranges: 8}
-  return (
-    <button onClick={() => setAppState((s) => ({ oranges: 8 }), true)}>
-      Only oranges
-    </button>
-  );
-}
-```
+<SandBox lib="react-state" code={replaceState} />

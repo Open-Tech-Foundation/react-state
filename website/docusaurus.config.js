@@ -4,6 +4,8 @@
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
+const pkgVer = require('../packages/react-state/package.json');
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'React State',
@@ -51,6 +53,11 @@ const config = {
         title: 'React State',
         items: [
           {
+            label: 'v' + pkgVer.version,
+            position: 'right',
+            href: 'https://www.npmjs.com/package/@open-tech-world/react-state',
+          },
+          {
             href: 'https://github.com/open-tech-world/react-state',
             // label: 'GitHub',
             className: 'header-github-link',
@@ -60,8 +67,15 @@ const config = {
       },
       footer: {
         style: 'dark',
-        links: [],
-        copyright: `Copyright © ${new Date().getFullYear()} Contributors of <a href="https://github.com/open-tech-world/react-state">open-tech-world/react-state</a>. Built with <a href="https://docusaurus.io">Docusaurus</a>.`,
+        links: [
+          {
+            html: `⚡ by <a href="https://open-tech-world.pages.dev">Open Tech World</a>`,
+          },
+          {
+            html: `📝 with <a href="https://docusaurus.io/">Docusaurus</a>`,
+          },
+        ],
+        copyright: `Copyright © ${new Date().getFullYear()} Contributors of <a href="https://github.com/open-tech-world/react-state">open-tech-world/react-state</a>`,
       },
       prism: {
         theme: lightCodeTheme,

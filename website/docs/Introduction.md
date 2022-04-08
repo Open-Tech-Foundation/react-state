@@ -3,6 +3,8 @@ sidebar_position: 1
 slug: '/'
 ---
 
+# React State
+
 > A shared state management library for React.
 
 ## Features
