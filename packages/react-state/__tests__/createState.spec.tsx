@@ -21,7 +21,7 @@ describe('createState', () => {
     const useAppState = createState({ counter: 0 });
     const Counter = () => {
       console.log('Render Counter');
-      const counter = useAppState((state) => state.counter);
+      const counter = useAppState((s) => s.counter);
 
       return (
         <div>

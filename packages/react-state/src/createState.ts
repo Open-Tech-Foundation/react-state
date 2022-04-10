@@ -1,41 +1,23 @@
 import { useSyncExternalStoreWithSelector } from 'use-sync-external-store/shim/with-selector';
 import shallowDiffObjs from './shallowDiffObjs';
+import {
+  Hook,
+  HookConfig,
+  ListenerFn,
+  Selector,
+  SetState,
+  SubscribeFn,
+} from './types';
 
-export interface HookConfig {
-  set: boolean;
-  shallow: boolean;
-}
-
-export type Selector<State, T> = (state: State) => T;
-
-export type Hook<State> = {
-  (selector: null): null;
-  (selector: null, config: { set: true }): SetState<State>;
-  <T>(selector: Selector<State, T>): T;
-  <T>(selector: Selector<State, T>, config: { set: true }): [
-    T,
-    SetState<State>
-  ];
-  <T>(selector: Selector<State, T>, config: { set: false; shallow: true }): T;
-  <T>(selector: Selector<State, T>, config: { set: true; shallow: true }): [
-    T,
-    SetState<State>
-  ];
-  <T>(selector: Selector<State, T>, config: { shallow: true }): T;
-};
-
-export type SetStateCallback<State> = (
-  state: State
-) => Partial<State> | Promise<Partial<State>>;
-
-export type SetState<State> = (
-  obj: Partial<State> | SetStateCallback<State>,
-  replace?: boolean
-) => Promise<void>;
-
-type ListenerFn = () => void;
-
-export default function createState<State>(initialState: State): Hook<State> {
+export default function createState<State>(initialState: State): Hook<State>;
+export default function createState<State>(
+  initialState: State,
+  api: true
+): [
+  Hook<State>,
+  { getState: () => State; setState: SetState<State>; subscribe: SubscribeFn }
+];
+export default function createState<State>(initialState: State, api?: boolean) {
   let state: State & Partial<State> = { ...initialState };
   const listerners = new Set<ListenerFn>();
 
@@ -47,7 +29,11 @@ export default function createState<State>(initialState: State): Hook<State> {
     });
   };
 
-  const subscribe = (lf: ListenerFn) => {
+  const getState = () => {
+    return state;
+  };
+
+  const subscribe: SubscribeFn = (lf: ListenerFn) => {
     listerners.add(lf);
     return () => listerners.delete(lf);
   };
@@ -77,6 +63,10 @@ export default function createState<State>(initialState: State): Hook<State> {
 
     return value;
   };
+
+  if (api) {
+    return [useStateHook, { getState, setState, subscribe }];
+  }
 
   return useStateHook;
 }
