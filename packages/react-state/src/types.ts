@@ -31,4 +31,11 @@ export type SetState<State> = (
 ) => Promise<void>;
 
 export type ListenerFn = () => void;
-export type SubscribeFn = (lFn: ListenerFn) => () => boolean;
+export type UnSubscribeFn = () => boolean;
+export type SubscribeFn = (lFn: ListenerFn) => UnSubscribeFn;
+
+export type StateAPI<T> = {
+  getState: () => T;
+  setState: SetState<T>;
+  subscribe: SubscribeFn;
+};

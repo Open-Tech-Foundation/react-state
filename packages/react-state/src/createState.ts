@@ -6,6 +6,7 @@ import {
   ListenerFn,
   Selector,
   SetState,
+  StateAPI,
   SubscribeFn,
 } from './types';
 
@@ -13,10 +14,7 @@ export default function createState<State>(initialState: State): Hook<State>;
 export default function createState<State>(
   initialState: State,
   api: true
-): [
-  Hook<State>,
-  { getState: () => State; setState: SetState<State>; subscribe: SubscribeFn }
-];
+): [Hook<State>, StateAPI<State>];
 export default function createState<State>(initialState: State, api?: boolean) {
   let state: State & Partial<State> = { ...initialState };
   const listerners = new Set<ListenerFn>();
