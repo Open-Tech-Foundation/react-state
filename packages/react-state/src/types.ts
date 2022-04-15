@@ -38,4 +38,5 @@ export type StateAPI<T> = {
   getState: () => T;
   setState: SetState<T>;
   subscribe: SubscribeFn;
+  destroy: () => void;
 };

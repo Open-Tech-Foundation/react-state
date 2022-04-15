@@ -36,6 +36,10 @@ export default function createState<State>(initialState: State, api?: boolean) {
     return () => listerners.delete(lf);
   };
 
+  const destroy = () => {
+    listerners.clear();
+  };
+
   const useStateHook: Hook<State> = <ST>(
     selector: Selector<State, ST> | null,
     config?: Partial<HookConfig>
@@ -63,7 +67,7 @@ export default function createState<State>(initialState: State, api?: boolean) {
   };
 
   if (api) {
-    return [useStateHook, { getState, setState, subscribe }];
+    return [useStateHook, { getState, setState, subscribe, destroy }];
   }
 
   return useStateHook;

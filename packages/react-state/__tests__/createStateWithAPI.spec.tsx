@@ -74,5 +74,11 @@ describe('createState with API', () => {
       expect(logSpy).toBeCalledTimes(5);
     });
     unSub();
+    api.destroy();
+    fireEvent.click(screen.getByText('Increment'));
+    await waitFor(() => {
+      expect(screen.getByText(/Counter: 2/)).toBeInTheDocument();
+      expect(logSpy).toBeCalledTimes(5);
+    });
   });
 });
