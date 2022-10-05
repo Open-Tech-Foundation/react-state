@@ -47,7 +47,7 @@ export default function createState<State>(initialState: State, api?: boolean) {
     const value = useSyncExternalStoreWithSelector(
       subscribe,
       () => state,
-      null,
+      () => state,
       () => selector?.(state),
       config?.shallow
         ? (a, b) =>
