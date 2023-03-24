@@ -1,26 +1,16 @@
+import * as React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import produce from 'immer';
 
-import { createState } from '../src';
+import { create } from '../src';
 
-let logSpy: jest.SpyInstance, errorSpy: jest.SpyInstance;
-
-beforeAll(() => {
-  logSpy = jest.spyOn(console, 'log').mockImplementation(() => undefined);
-  errorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
-});
-
-afterAll(() => {
-  logSpy.mockRestore();
-  errorSpy.mockRestore();
-});
-
-describe('createState Sync', () => {
+describe('create Sync', () => {
   test('Set state only hook fn', async () => {
-    const useAppState = createState({ counter: 0 });
+    let renderCount = 0;
+    const [useAppState, setState] = create({ counter: 0 });
     const Counter = () => {
-      console.log('Render Counter');
+      renderCount++;
       const counter = useAppState((state) => state.counter);
 
       return (
@@ -31,8 +21,7 @@ describe('createState Sync', () => {
     };
 
     const SetCounter = () => {
-      console.log('Render SetCounter');
-      const setState = useAppState(null, { set: true });
+      renderCount++;
 
       return (
         <div>
@@ -48,9 +37,7 @@ describe('createState Sync', () => {
     };
 
     const ResetCounter = () => {
-      console.log('Render Reset');
-      const setState = useAppState(null, { set: true });
-
+      renderCount++;
       return (
         <div>
           <button onClick={() => setState({ counter: 0 })}>Reset</button>
@@ -72,17 +59,17 @@ describe('createState Sync', () => {
     fireEvent.click(screen.getByText('Increment'));
     await waitFor(() => {
       expect(screen.getByText(/Counter: 1/)).toBeInTheDocument();
-      expect(logSpy).toBeCalledTimes(4);
+      expect(renderCount).toBe(4);
     });
     fireEvent.click(screen.getByText('Reset'));
     await waitFor(() => {
       expect(screen.getByText(/Counter: 0/)).toBeInTheDocument();
-      expect(logSpy).toBeCalledTimes(5);
+      expect(renderCount).toBe(5);
     });
   });
 
   it('Displays the initial value', () => {
-    const useAppState = createState({ counter: 0 });
+    const [useAppState] = create({ counter: 0 });
     const App = () => {
       const counter = useAppState((state) => state.counter);
       return (
@@ -91,12 +78,12 @@ describe('createState Sync', () => {
         </div>
       );
     };
-    render(<App />, { legacyRoot: true });
+    render(<App />);
     expect(screen.getByText(/Counter: 0/)).toBeInTheDocument();
   });
 
   it('Fetches everything from the state', () => {
-    const useAppState = createState({
+    const [useAppState] = create({
       user: { name: 'xxx' },
       theme: 'Dark',
       settings: { lang: 'en-us' },
@@ -111,18 +98,16 @@ describe('createState Sync', () => {
         </div>
       );
     };
-    render(<App />, { legacyRoot: true });
+    render(<App />);
     expect(screen.getByText('User: xxx')).toBeInTheDocument();
     expect(screen.getByText('Theme: Dark')).toBeInTheDocument();
     expect(screen.getByText('Language: en-us')).toBeInTheDocument();
   });
 
   it('Changes the initial value', async () => {
-    const useAppState = createState({ counter: 0 });
+    const [useAppState, setAppState] = create({ counter: 0 });
     const App = () => {
-      const [counter, setAppState] = useAppState((state) => state.counter, {
-        set: true,
-      });
+      const counter = useAppState((state) => state.counter);
       return (
         <div>
           <div>Counter: {counter}</div>
@@ -136,7 +121,7 @@ describe('createState Sync', () => {
         </div>
       );
     };
-    render(<App />, { legacyRoot: true });
+    render(<App />);
     expect(screen.getByText(/Counter: 0/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button'));
     await waitFor(() => {
@@ -145,11 +130,9 @@ describe('createState Sync', () => {
   });
 
   test('The same state value in two components using the hook', async () => {
-    const useAppState = createState({ counter: 0 });
+    const [useAppState, setAppState] = create({ counter: 0 });
     const Counter = () => {
-      const [counter, setAppState] = useAppState((state) => state.counter, {
-        set: true,
-      });
+      const counter = useAppState((state) => state.counter);
       return (
         <div>
           <div>Counter: {counter}</div>
@@ -171,7 +154,7 @@ describe('createState Sync', () => {
         </>
       );
     };
-    render(<App />, { legacyRoot: true });
+    render(<App />);
     expect(screen.getAllByText(/Counter: 0/)[0]).toBeInTheDocument();
     expect(screen.getAllByText(/Counter: 0/)[1]).toBeInTheDocument();
     fireEvent.click(screen.getAllByRole('button')[0]);
@@ -187,16 +170,15 @@ describe('createState Sync', () => {
   });
 
   test('Rendering only the component that selected values changed', async () => {
-    const useAppState = createState({
+    let renderCount = 0;
+    const [useAppState, setAppState] = create({
       counter: 0,
       user: { name: 'xxx', signin: true },
     });
 
     const Counter = () => {
-      console.log('Rendering Counter');
-      const [counter, setAppState] = useAppState((state) => state.counter, {
-        set: true,
-      });
+      renderCount++;
+      const counter = useAppState((state) => state.counter);
       return (
         <div>
           <div>Counter: {counter}</div>
@@ -212,10 +194,8 @@ describe('createState Sync', () => {
     };
 
     const User = () => {
-      console.log('Rendering User');
-      const [user, setAppState] = useAppState((state) => state.user, {
-        set: true,
-      });
+      renderCount++;
+      const user = useAppState((state) => state.user);
       return (
         <div>
           <div>{user.signin ? `Welcome ${user.name}` : 'Welcome Guest'}</div>
@@ -233,7 +213,7 @@ describe('createState Sync', () => {
     };
 
     const App = () => {
-      console.log('Rendering App');
+      renderCount++;
       return (
         <>
           <User />
@@ -241,24 +221,24 @@ describe('createState Sync', () => {
         </>
       );
     };
-    render(<App />, { legacyRoot: true });
-    expect(logSpy).toBeCalledTimes(3);
+    render(<App />);
+    expect(renderCount).toBe(3);
     expect(screen.getByText(/Counter: 0/)).toBeInTheDocument();
     expect(screen.getByText(/Welcome xxx/)).toBeInTheDocument();
     fireEvent.click(screen.getByText('Increment'));
     await waitFor(() => {
       expect(screen.getByText(/Counter: 1/)).toBeInTheDocument();
-      expect(logSpy).toBeCalledTimes(4);
+      expect(renderCount).toBe(4);
     });
     fireEvent.click(screen.getByText('Logout'));
     await waitFor(() => {
       expect(screen.getByText(/Welcome Guest/)).toBeInTheDocument();
-      expect(logSpy).toBeCalledTimes(5);
+      expect(renderCount).toBe(5);
     });
   });
 
   it('Constructs a single object with multiple state-picks', () => {
-    const useAppState = createState({
+    const [useAppState] = create({
       products: { mobiles: ['M1', 'M2'], laptops: ['L1'] },
     });
 
@@ -282,20 +262,21 @@ describe('createState Sync', () => {
         </>
       );
     };
-    render(<App />, { legacyRoot: true });
+    render(<App />);
     expect(screen.getByText(/M1/)).toBeInTheDocument();
     expect(screen.getByText(/M2/)).toBeInTheDocument();
     expect(screen.getByText(/L1/)).toBeInTheDocument();
   });
 
   test('Shallow diff single array for multiple state-picks', async () => {
-    const useAppState = createState({
+    let renderCount = 0;
+    const [useAppState, setState] = create({
       settings: { theme: 'Dark' },
       products: { mobiles: ['M1', 'M2'], laptops: ['L1'] },
     });
 
     const Products = () => {
-      console.log('Render Products');
+      renderCount++;
 
       const [mobiles, laptops] = useAppState(
         (s) => [s.products.mobiles, s.products.laptops],
@@ -318,8 +299,7 @@ describe('createState Sync', () => {
     };
 
     const CreateProduct = () => {
-      console.log('Render CreateProduct');
-      const setState = useAppState(null, { set: true });
+      renderCount++;
       return (
         <div>
           <button
@@ -357,10 +337,8 @@ describe('createState Sync', () => {
     };
 
     function Header() {
-      console.log('Render Header');
-      const [settings, setState] = useAppState((s) => s.settings, {
-        set: true,
-      });
+      renderCount++;
+      const settings = useAppState((s) => s.settings);
 
       return (
         <div>
@@ -389,7 +367,7 @@ describe('createState Sync', () => {
         </>
       );
     };
-    render(<App />, { legacyRoot: true });
+    render(<App />);
     expect(screen.getByText(/M1/)).toBeInTheDocument();
     expect(screen.getByText(/M2/)).toBeInTheDocument();
     expect(screen.getByText(/L1/)).toBeInTheDocument();
@@ -403,14 +381,14 @@ describe('createState Sync', () => {
       expect(screen.getAllByRole('listitem')).toHaveLength(5);
     });
     await waitFor(() => {
-      expect(logSpy).toBeCalledTimes(5);
+      expect(renderCount).toBe(5);
     });
     await waitFor(() => {
       fireEvent.click(screen.getByText('Toggle'));
     });
     await waitFor(() => {
       expect(screen.getByText('Theme: Light')).toBeInTheDocument();
-      expect(logSpy).toBeCalledTimes(6);
+      expect(renderCount).toBe(6);
     });
   });
 
@@ -419,14 +397,14 @@ describe('createState Sync', () => {
       settings: { theme: string };
       user?: { name: string };
     }
-    const useAppState = createState<State>({
+    const [useAppState, setAppState] = create<State>({
       settings: { theme: 'Dark' },
       user: { name: 'xxx' },
     });
     const App = () => {
-      const [{ settings, user }, setAppState] = useAppState(
+      const { settings, user } = useAppState(
         (s) => ({ settings: s.settings, user: s.user }),
-        { set: true, shallow: true }
+        { shallow: true }
       );
       return (
         <>
@@ -448,7 +426,7 @@ describe('createState Sync', () => {
         </>
       );
     };
-    render(<App />, { legacyRoot: true });
+    render(<App />);
     expect(screen.getByText('Theme: Dark')).toBeInTheDocument();
     expect(screen.getByText('Welcome xxx')).toBeInTheDocument();
     fireEvent.click(screen.getByText('Logout'));
@@ -461,13 +439,10 @@ describe('createState Sync', () => {
     interface State {
       counter: number;
     }
-    const useCounterState = createState<State>({ counter: 0 });
+    const [useCounterState, set] = create<State>({ counter: 0 });
 
     function Counter() {
-      console.log('Render Counter');
-      const [counter, set] = useCounterState((state) => state.counter, {
-        set: true,
-      });
+      const counter = useCounterState((state) => state.counter);
 
       const increment = (value: number): Promise<number> => {
         return new Promise((resolve) => {
@@ -490,8 +465,6 @@ describe('createState Sync', () => {
     }
 
     const App = () => {
-      console.log('Render App');
-
       return (
         <div>
           <Counter />
@@ -499,7 +472,7 @@ describe('createState Sync', () => {
       );
     };
 
-    render(<App />, { legacyRoot: true });
+    render(<App />);
     expect(screen.getByText('Counter: 0')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button'));
     await waitFor(() => {

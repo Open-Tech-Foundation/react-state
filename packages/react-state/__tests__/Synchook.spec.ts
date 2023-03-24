@@ -1,7 +1,7 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import produce from 'immer';
 
-import { createState } from '../src';
+import { create } from '../src';
 
 interface State {
   theme: string;
@@ -16,7 +16,7 @@ const state: State = {
   user: { id: 'abc' },
   fruits: ['Apple', 'Mango', 'Orange'],
 };
-const useAppState = createState(state);
+const [useAppState, setState] = create(state);
 
 describe('Sync Hook', () => {
   test('With null selector', () => {
@@ -27,11 +27,6 @@ describe('Sync Hook', () => {
   test('With selector returns null', () => {
     const { result } = renderHook(() => useAppState(() => null));
     expect(result.current).toBeNull();
-  });
-
-  test('Without selector & get set fn', () => {
-    const { result } = renderHook(() => useAppState(null, { set: true }));
-    expect(typeof result.current).toBe('function');
   });
 
   test('Select entire state', () => {
@@ -57,77 +52,61 @@ describe('Sync Hook', () => {
   });
 
   test('Select state & set config true', () => {
-    const { result } = renderHook(() => useAppState((s) => s, { set: true }));
-    expect(result.current[0]).toEqual(state);
-    expect(typeof result.current[1]).toBe('function');
+    const { result } = renderHook(() => useAppState((s) => s));
+    expect(result.current).toEqual(state);
   });
 
   test('Select a value from the state & update it by object', () => {
-    const { result } = renderHook(() =>
-      useAppState((s) => s.theme, { set: true })
-    );
-    expect(result.current[0]).toEqual('Dark');
-    expect(typeof result.current[1]).toBe('function');
+    const { result } = renderHook(() => useAppState((s) => s.theme));
+    expect(result.current).toEqual('Dark');
     act(() => {
-      const setFn = result.current[1];
-      setFn({ theme: 'Light' });
+      setState({ theme: 'Light' });
     });
-    expect(result.current[0]).toEqual('Light');
+    expect(result.current).toEqual('Light');
   });
 
   test('Select a value from the state & update it by callback', async () => {
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useAppState((s) => s.count, { set: true })
-    );
-    expect(result.current[0]).toEqual(5);
-    expect(typeof result.current[1]).toBe('function');
-
-    const setFn = result.current[1];
+    const { result } = renderHook(() => useAppState((s) => s.count));
+    expect(result.current).toEqual(5);
 
     act(() => {
-      setFn((s) => ({
+      setState((s) => ({
         count: s.count + 1,
       }));
     });
 
-    await waitForNextUpdate();
-    expect(result.current[0]).toEqual(6);
+    await waitFor(() => expect(result.current).toEqual(6));
   });
 
   test('Shallow diff', async () => {
-    const { result, waitForNextUpdate } = renderHook(() =>
+    const { result } = renderHook(() =>
       useAppState((s) => ({ user: s.user, fruits: s.fruits }), {
         set: true,
         shallow: true,
       })
     );
-    expect(typeof result.current?.[1]).toBe('function');
-
-    const setFn = result.current?.[1];
 
     act(() => {
-      setFn?.((s) => ({
+      setState?.((s) => ({
         fruits: [...s.fruits, 'Banana'],
       }));
     });
 
-    await waitForNextUpdate();
-    expect(result.current?.[0]).toEqual({
-      user: state.user,
-      fruits: [...state.fruits, 'Banana'],
-    });
+    await waitFor(() =>
+      expect(result.current).toEqual({
+        user: state.user,
+        fruits: [...state.fruits, 'Banana'],
+      })
+    );
   });
 
   test('Repalce state with immer', async () => {
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useAppState((s) => s.user, { set: true })
-    );
+    const { result } = renderHook(() => useAppState((s) => s.user));
 
-    expect(result.current[0]).toBe(state.user);
+    expect(result.current).toBe(state.user);
 
-    const setFn = result.current[1];
     act(() => {
-      setFn(
+      setState(
         (s) =>
           produce(s, (draft) => {
             delete draft.user;
@@ -136,8 +115,6 @@ describe('Sync Hook', () => {
       );
     });
 
-    await waitForNextUpdate();
-
-    expect(result.current[0]).toBeUndefined();
+    await waitFor(() => expect(result.current).toBeUndefined());
   });
 });

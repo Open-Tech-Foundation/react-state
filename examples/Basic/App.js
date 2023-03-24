@@ -1,4 +1,4 @@
-import { createState } from '@open-tech-world/react-state';
+import { createState } from '@opentf/react-state';
 
 import './styles.css';
 

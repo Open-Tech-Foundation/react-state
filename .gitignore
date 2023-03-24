@@ -24,3 +24,5 @@ build
 built
 lib
 .parcel-cache
+
+apps/demo/*

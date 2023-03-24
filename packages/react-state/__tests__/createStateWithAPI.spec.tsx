@@ -1,25 +1,14 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
-import { createState } from '../src';
+import { create } from '../src';
 
-let logSpy: jest.SpyInstance, errorSpy: jest.SpyInstance;
-
-beforeAll(() => {
-  logSpy = jest.spyOn(console, 'log').mockImplementation(() => undefined);
-  errorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
-});
-
-afterAll(() => {
-  logSpy.mockRestore();
-  errorSpy.mockRestore();
-});
-
-describe('createState with API', () => {
+describe('create with API', () => {
   test('State API', async () => {
-    const [useAppState, api] = createState({ counter: 0 }, true);
+    let renderCount = 0;
+    const [useAppState, setState, api] = create({ counter: 0 });
     const Counter = () => {
-      console.log('Render Counter');
+      renderCount++;
       const counter = useAppState((s) => s.counter);
 
       return (
@@ -30,9 +19,7 @@ describe('createState with API', () => {
     };
 
     const SetCounter = () => {
-      console.log('Render SetCounter');
-      const setState = useAppState(null, { set: true });
-
+      renderCount++;
       return (
         <div>
           <button
@@ -55,30 +42,30 @@ describe('createState with API', () => {
       );
     };
     render(<App />);
-    expect(api.getState()).toEqual({ counter: 0 });
+    expect(api.get()).toEqual({ counter: 0 });
     expect(screen.getByText(/Counter: 0/)).toBeInTheDocument();
     fireEvent.click(screen.getByText('Increment'));
     await waitFor(() => {
       expect(screen.getByText(/Counter: 1/)).toBeInTheDocument();
-      expect(logSpy).toBeCalledTimes(3);
+      expect(renderCount).toBe(3);
     });
-    expect(api.getState()).toEqual({ counter: 1 });
+    expect(api.get()).toEqual({ counter: 1 });
 
     const unSub = api.subscribe(console.log);
-    api.setState({ counter: api.getState().counter + 1 });
+    api.set({ counter: api.get().counter + 1 });
     await waitFor(() => {
-      expect(api.getState()).toEqual({ counter: 2 });
+      expect(api.get()).toEqual({ counter: 2 });
     });
     await waitFor(() => {
       expect(screen.getByText(/Counter: 2/)).toBeInTheDocument();
-      expect(logSpy).toBeCalledTimes(5);
+      expect(renderCount).toBe(5);
     });
     unSub();
     api.destroy();
     fireEvent.click(screen.getByText('Increment'));
     await waitFor(() => {
       expect(screen.getByText(/Counter: 2/)).toBeInTheDocument();
-      expect(logSpy).toBeCalledTimes(5);
+      expect(renderCount).toBe(5);
     });
   });
 });

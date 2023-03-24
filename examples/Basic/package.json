@@ -1,12 +1,12 @@
 {
-  "name": "@open-tech-world/react-state-example-basic",
+  "name": "@opentf/react-state-example-basic",
   "version": "0.1.0",
-  "description": "This example shows how to create, use, and set the shared state in React components using '@open-tech-world/react-state'.",
+  "description": "This example shows how to create, use, and set the shared state in React components using '@opentf/react-state'.",
   "main": "index.js",
   "dependencies": {
     "react": "latest",
     "react-dom": "latest",
     "react-scripts": "latest",
-    "@open-tech-world/react-state": "latest"
+    "@opentf/react-state": "latest"
   }
 }

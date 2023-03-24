@@ -1,14 +1,36 @@
 {
-  "workspaces": [
-    "packages/react-state",
-    "website"
-  ],
+  "private": true,
   "scripts": {
-    "start": "yarn workspace website start",
-    "test": "yarn workspace @open-tech-world/react-state test",
-    "build": "yarn workspace @open-tech-world/react-state build",
-    "ci": "yarn workspace @open-tech-world/react-state ci",
-    "build:website": "yarn build && yarn workspace website build"
+    "dev": "turbo run build --filter=react-state -- --watch",
+    "dev:web": "turbo run start --filter=website",
+    "test": "turbo run test --filter=react-state",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "lint": "turbo run lint --filter=react-state",
+    "build": "turbo run build --filter=react-state",
+    "build:website": "turbo run build --filter=website",
+    "ci": "turbo run ci --filter=react-state",
+    "prepare": "husky install",
+    "publish-packages": "turbo run build lint test --filter=react-state && changeset version && changeset publish"
   },
-  "packageManager": "yarn@3.2.0"
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "pnpm run format",
+      "pnpm run lint --"
+    ],
+    "*.json": [
+      "npm run format"
+    ]
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.26.0",
+    "@commitlint/cli": "^17.4.4",
+    "@commitlint/config-conventional": "^17.4.4",
+    "husky": "^8.0.0",
+    "lint-staged": "^13.1.2",
+    "turbo": "^1.8.2"
+  }
 }

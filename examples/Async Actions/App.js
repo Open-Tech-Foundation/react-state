@@ -1,5 +1,5 @@
-import { Form, Field } from '@open-tech-world/react-form';
-import { createState } from '@open-tech-world/react-state';
+import { Form, Field } from '@open-tech-foundation/react-form';
+import { createState } from '@opentf/react-state';
 import { useState } from 'react';
 
 import './styles.css';

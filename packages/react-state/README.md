@@ -2,10 +2,10 @@
 
 # React State
 
-⚡ by [Open Tech World](https://open-tech-world.pages.dev/)
+⚡ by [Open Tech World](https://open-tech-foundation.pages.dev/)
 
-[![Build](https://github.com/open-tech-world/react-state/actions/workflows/build.yml/badge.svg)](https://github.com/open-tech-world/react-state/actions/workflows/build.yml)
-[![npm bundle size (scoped version)](https://img.shields.io/bundlephobia/minzip/@open-tech-world/react-state/latest?label=Min%2BGZip)](https://bundlephobia.com/package/@open-tech-world/react-state)
+[![Build](https://github.com/open-tech-foundation/react-state/actions/workflows/build.yml/badge.svg)](https://github.com/open-tech-foundation/react-state/actions/workflows/build.yml)
+[![npm bundle size (scoped version)](https://img.shields.io/bundlephobia/minzip/@opentf/react-state/latest?label=Min%2BGZip)](https://bundlephobia.com/package/@opentf/react-state)
 
 </div>
 
@@ -25,19 +25,19 @@
 Using npm
 
 ```shell
-npm install @open-tech-world/react-state
+npm install @opentf/react-state
 ```
 
 Using Yarn
 
 ```shell
-yarn add @open-tech-world/react-state
+yarn add @opentf/react-state
 ```
 
 ## Usage
 
 ```jsx
-import { createState } from '@open-tech-world/react-state';
+import { createState } from '@opentf/react-state';
 
 const useAppState = createState({});
 
@@ -58,7 +58,7 @@ function App() {
 ## Usage (TypeScript)
 
 ```tsx
-import { createState } from '@open-tech-world/react-state';
+import { createState } from '@opentf/react-state';
 
 interface AppState {
   obj1: type1;

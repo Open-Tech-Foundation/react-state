@@ -1,3 +1,3 @@
-import createState from './createState';
+import create from './create';
 
-export { createState };
+export { create };
