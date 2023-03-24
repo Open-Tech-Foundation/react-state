@@ -72,7 +72,7 @@ interface AppState {
   age: number;
 }
 
-const appState: AppState = { name: 'Xyz', age: '25' };
+const appState: AppState = { name: 'Xyz', age: 25 };
 
 const [useAppState, setAppState, api] = createState(appState);
 
@@ -85,7 +85,7 @@ function App() {
     <>
       <p>Name: {state.name}</p>
       <p>Age: {state.age}</p>
-      <button onClick={() => setState((s) => ({ name: '' }))}>
+      <button onClick={() => setAppState((s) => ({ name: '' }))}>
         Change State
       </button>
     </>
@@ -95,7 +95,7 @@ function App() {
 
 ## Documentation
 
-Visit [https://react-app-state.pages.dev/](https://react-app-state.pages.dev/) for complete doucmentation.
+Please visit [https://react-app-state.pages.dev/](https://react-app-state.pages.dev/) for complete documentation.
 
 ## License
 
