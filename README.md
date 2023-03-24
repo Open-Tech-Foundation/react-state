@@ -2,14 +2,13 @@
 
 # React State
 
-⚡ by [Open Tech World](https://open-tech-foundation.pages.dev/)
+⚡ by [OPEN TECH FOUNDATION](https://open-tech-foundation.pages.dev/)
 
 [![Build](https://github.com/open-tech-foundation/react-state/actions/workflows/build.yml/badge.svg)](https://github.com/open-tech-foundation/react-state/actions/workflows/build.yml)
-[![npm bundle size (scoped version)](https://img.shields.io/bundlephobia/minzip/@opentf/react-state/latest?label=Min%2BGZip)](https://bundlephobia.com/package/@opentf/react-state)
 
 </div>
 
-> A shared state management library for React.
+> A shared/global state management library for React.
 
 ## Features
 
@@ -34,20 +33,28 @@ Using Yarn
 yarn add @opentf/react-state
 ```
 
+Using pnpm
+
+```shell
+pnpm add @opentf/react-state
+```
+
 ## Usage
 
 ```jsx
-import { createState } from '@opentf/react-state';
+import { create } from '@opentf/react-state';
 
-const useAppState = createState({});
+const [useAppState, setAppState, api] = createState({ count: 0 });
+
+api.subscribe(console.log)
 
 function App() {
-  const [state, setState] = useAppState((s) => s, { set: true });
-  console.log(state);
+  const count = useAppState((s) => s.count);
 
   return (
     <>
-      <button onClick={() => setState((s) => ({ obj: value }))}>
+      <p>Count: {count}</p>
+      <button onClick={() => setAppState((s) => ({ count: s.count + 1 }))}>
         Change State
       </button>
     </>
@@ -58,24 +65,27 @@ function App() {
 ## Usage (TypeScript)
 
 ```tsx
-import { createState } from '@opentf/react-state';
+import { create } from '@opentf/react-state';
 
 interface AppState {
-  obj1: type1;
-  obj2: type2;
+  name: string;
+  age: number;
 }
 
-const appState: AppState = { obj1: value, obj2: value };
+const appState: AppState = { name: 'Xyz', age: '25' };
 
-const useAppState = createState(appState);
+const [useAppState, setAppState, api] = createState(appState);
+
+api.subscribe(console.log)
 
 function App() {
-  const [state, setState] = useAppState((s) => s, { set: true });
-  console.log(state);
+  const state = useAppState((s) => s);
 
   return (
     <>
-      <button onClick={() => setState((s) => ({ obj1: newValue }))}>
+      <p>Name: {state.name}</p>
+      <p>Age: {state.age}</p>
+      <button onClick={() => setState((s) => ({ name: '' }))}>
         Change State
       </button>
     </>
@@ -85,7 +95,7 @@ function App() {
 
 ## Documentation
 
-Please read the complete documentation at: [https://react-app-state.pages.dev/](https://react-app-state.pages.dev/)
+Visit [https://react-app-state.pages.dev/](https://react-app-state.pages.dev/) for complete doucmentation.
 
 ## License
 
