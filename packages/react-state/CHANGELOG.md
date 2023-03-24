@@ -1,5 +1,11 @@
 # @opentf/react-state
 
+## 0.11.2
+
+### Patch Changes
+
+- 566e142: Fixed readme with examples with typo
+
 ## 0.11.1
 
 ### Patch Changes
