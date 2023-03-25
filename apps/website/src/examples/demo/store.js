@@ -1,5 +1,11 @@
-import { createState } from '@open-tech-world/react-state';
+import { create } from '@opentf/react-state';
 
-const useAppState = createState({ count: 0 });
+const [useAppState, setAppState, api] = create({ mode: 'Light' });
 
-export default useAppState;
+api.subscribe(console.log);
+
+const [useCounterState, setCounterState, counterAPI] = create({ count: 0 });
+
+counterAPI.subscribe(console.log);
+
+export { useAppState, setAppState, useCounterState, setCounterState };

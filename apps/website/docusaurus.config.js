@@ -23,7 +23,7 @@ const config = {
         docs: {
           routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
-          sidebarCollapsed: false,
+          sidebarCollapsed: true,
           // Please change this to your repo.
           editUrl:
             'https://github.com/open-tech-foundation/react-state/tree/main/website/',

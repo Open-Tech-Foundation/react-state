@@ -8,9 +8,7 @@ import {SandBox} from '@opentf/react-sandbox';
 import useStateWithoutSelector from '!!raw-loader!@site/src/examples/useStateWithoutSelector';
 import useStateWithDefaultSelector from '!!raw-loader!@site/src/examples/useStateWithDefaultSelector';
 import useStateWithSingleObj from '!!raw-loader!@site/src/examples/useStateWithSingleObj';
-import useStateWithMultipleObj from '!!raw-loader!@site/src/examples/useStateWithMultipleObj';
 import uSWithMulObjsSingleSel from '!!raw-loader!@site/src/examples/uSWithMulObjsSingleSel';
-import uSWithMulObjsSingleSelArr from '!!raw-loader!@site/src/examples/uSWithMulObjsSingleSelArr';
 
 Use the created `hook` function in the `React` components.
 
@@ -22,30 +20,20 @@ The `selector` function must be passed to get `some` or `complete` state objects
 Avoid using the hook without a selector.
 :::
 
-<SandBox lib="react-state" code={useStateWithoutSelector} />
+<SandBox deps={["@opentf/react-state"]} code={useStateWithoutSelector} />
 
 ### Hook with default selector
 
 It selects everything in the state.
 
-<SandBox lib="react-state" code={useStateWithDefaultSelector} />
+<SandBox deps={["@opentf/react-state"]} code={useStateWithDefaultSelector} />
 
 ### Hook with single object selector
 
-<SandBox lib="react-state" code={useStateWithSingleObj} />
+<SandBox deps={["@opentf/react-state"]} code={useStateWithSingleObj} />
 
-### Multiple Hooks with single object selector
-
-<SandBox lib="react-state" code={useStateWithMultipleObj} />
-
-### Multiple objects selector with single hook
+### Hook Multiple objects selector
 
 If you want to select multiple state objects within a single object, use the `shallow` diff configuration.
 
-<SandBox lib="react-state" code={uSWithMulObjsSingleSel} />
-
-### Multiple objects selector with single hook (Array)
-
-If you want to select multiple state objects within a single object, use the `shallow` diff configuration.
-
-<SandBox lib="react-state" code={uSWithMulObjsSingleSelArr} />
+<SandBox deps={["@opentf/react-state"]} code={uSWithMulObjsSingleSel} />

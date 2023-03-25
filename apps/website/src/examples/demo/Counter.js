@@ -1,7 +1,7 @@
-import useAppState from './store';
+import { useCounterState } from './store';
 
 export default function Counter() {
-  const count = useAppState((s) => s.count);
+  const count = useCounterState((s) => s.count);
 
-  return <div className="counter">Count: {count}</div>;
+  return <div className="counter">{count}</div>;
 }

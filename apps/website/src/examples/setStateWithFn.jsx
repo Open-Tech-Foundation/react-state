@@ -1,9 +1,9 @@
-import { createState } from '@opentf/react-state';
+import { create } from '@opentf/react-state';
 
-const useAppState = createState({ theme: 'Light', lang: 'en-us' });
+const [useAppState, setAppState] = create({ theme: 'Light', lang: 'en-us' });
 
 export default function App() {
-  const [state, setAppState] = useAppState((s) => s, { set: true });
+  const state= useAppState((s) => s);
 
   return (
     <div>

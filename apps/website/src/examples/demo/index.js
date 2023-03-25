@@ -1,13 +1,15 @@
-import useAppState from './store';
+import { useAppState, setCounterState } from './store';
+import Header from './Header';
 import Counter from './Counter';
 import './styles.css';
 
 export default function App() {
-  const [count, setAppState] = useAppState((s) => s, { set: true });
+  const mode = useAppState((s) => s.mode);
 
   return (
-    <div className="app">
-      <button onClick={() => setAppState((s) => ({ count: s.count + 1 }))}>
+    <div className="app" data-theme={mode}>
+      <Header />
+      <button onClick={() => setCounterState((s) => ({ count: s.count + 1 }))}>
         INCREMENT
       </button>
       <div>

@@ -44,7 +44,7 @@ pnpm add @opentf/react-state
 ```jsx
 import { create } from '@opentf/react-state';
 
-const [useAppState, setAppState, api] = createState({ count: 0 });
+const [useAppState, setAppState, api] = create({ count: 0 });
 
 api.subscribe(console.log)
 
@@ -74,7 +74,7 @@ interface AppState {
 
 const appState: AppState = { name: 'Xyz', age: 25 };
 
-const [useAppState, setAppState, api] = createState(appState);
+const [useAppState, setAppState, api] = create(appState);
 
 api.subscribe(console.log)
 

@@ -1,26 +1,25 @@
-import { Form, Field } from '@open-tech-foundation/react-form';
-import { createState } from '@opentf/react-state';
+import { Form, Field } from '@open-tech-world/react-form';
+import { create } from '@opentf/react-state';
 import { useState } from 'react';
 
 import './styles.css';
 
 const appState = {
   packages: [],
-  total: 0
+  total: 0,
 };
 
-const useAppState = createState(appState);
+const [useAppState, setState] = create(appState);
 
 const Search = () => {
   const [loading, setLoading] = useState(false);
-  const setState = useAppState(null, { set: true });
   return (
     <div className="search-form">
       <Form
         onSubmit={async (values) => {
           setLoading(true);
           const response = await fetch(
-            `https://registry.npmjs.com/-/v1/search?text=${values.pkgName}&size=5`
+            `https://registry.npmjs.com/-/v1/search?text=${values.pkgName}&size=10`
           );
           setLoading(false);
           setState(async () => {

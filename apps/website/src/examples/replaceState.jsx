@@ -1,22 +1,20 @@
-import { createState } from '@opentf/react-state';
+import { create } from '@opentf/react-state';
 
-const useAppState = createState({
+const [useAppState, setAppState] = create({
   fruits: { Apple: 5, Mango: 2, Banana: 7 },
 });
 
 export default function App() {
-  const [fruits, setAppState] = useAppState((s) => s.fruits, { set: true });
+  const fruits = useAppState((s) => s.fruits);
 
   const renderFruits = () => {
     let items = [];
     for (const key in fruits) {
-      if (Object.hasOwnProperty.call(fruits, key)) {
-        items.push(
-          <li>
-            {key}: {fruits[key]}
-          </li>
-        );
-      }
+      items.push(
+        <li>
+          {key}: {fruits[key]}
+        </li>
+      );
     }
 
     return items;
@@ -27,9 +25,11 @@ export default function App() {
       <h3>Fruits:</h3>
       <ul>{renderFruits()}</ul>
       <button
-        onClick={() => setAppState((s) => ({ fruits: { Orange: 8, Kiwi: 3 } }), true)}
+        onClick={() =>
+          setAppState((s) => ({ fruits: { Orange: 8, Kiwi: 3 } }), true)
+        }
       >
-        Next page
+        Replace fruits
       </button>
     </div>
   );
