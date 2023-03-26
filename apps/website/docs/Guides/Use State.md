@@ -32,7 +32,7 @@ It selects everything in the state.
 
 <SandBox deps={["@opentf/react-state"]} code={useStateWithSingleObj} />
 
-### Hook Multiple objects selector
+### Hook with multiple objects selector
 
 If you want to select multiple state objects within a single object, use the `shallow` diff configuration.
 

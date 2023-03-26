@@ -1,7 +1,8 @@
 import { create } from '@opentf/react-state';
 
 const [useAppState, , api] = create({
-  settings: { theme: 'Dark', lang: 'en-us' },
+  lang: 'en-us',
+  settings: { theme: 'Dark' },
 });
 
 api.subscribe(console.log);
@@ -12,7 +13,7 @@ export default function App() {
   const { theme, lang } = useAppState(
     (s) => ({
       theme: s.settings.theme,
-      lang: s.settings.lang,
+      lang: s.lang,
     }),
     { shallow: true } // Here, either theme or lang prop changed will trigger rendering of the component.
   );
