@@ -46,7 +46,7 @@ import { create } from '@opentf/react-state';
 
 const [useAppState, setAppState, api] = create({ count: 0 });
 
-api.subscribe(console.log)
+api.subscribe(console.log);
 
 function App() {
   const count = useAppState((s) => s.count);
@@ -76,7 +76,7 @@ const appState: AppState = { name: 'Xyz', age: 25 };
 
 const [useAppState, setAppState, api] = create(appState);
 
-api.subscribe(console.log)
+api.subscribe(console.log);
 
 function App() {
   const state = useAppState((s) => s);
