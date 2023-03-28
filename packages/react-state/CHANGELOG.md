@@ -1,5 +1,11 @@
 # @opentf/react-state
 
+## 0.12.0
+
+### Minor Changes
+
+- b145e41: Export missing types
+
 ## 0.11.2
 
 ### Patch Changes
