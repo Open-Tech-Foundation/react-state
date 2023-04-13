@@ -1,5 +1,11 @@
 # @opentf/react-state
 
+## 0.12.1
+
+### Patch Changes
+
+- 701876f: Removed unwanted dev deps
+
 ## 0.12.0
 
 ### Minor Changes
