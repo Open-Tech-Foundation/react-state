@@ -1,5 +1,11 @@
 # @opentf/react-state
 
+## 0.13.0
+
+### Minor Changes
+
+- 328032c: Fixed importing react shim for next.js
+
 ## 0.12.1
 
 ### Patch Changes
