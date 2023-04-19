@@ -1,4 +1,4 @@
-import { useSyncExternalStoreWithSelector } from 'use-sync-external-store/shim/with-selector';
+import { useSyncExternalStoreWithSelector } from 'use-sync-external-store/shim/with-selector.js';
 import shallowDiffObjs from './shallowDiffObjs';
 import type { Hook, ListenerFn, SetState, API, SubscribeFn } from './types';
 

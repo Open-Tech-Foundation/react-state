@@ -8,5 +8,5 @@ export default defineConfig({
   format: ['cjs', 'esm'],
   dts: true,
   minify: true,
-  name: 'utils',
+  name: 'React State',
 });
