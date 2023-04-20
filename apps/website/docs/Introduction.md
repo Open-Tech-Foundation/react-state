@@ -27,6 +27,7 @@ import styles from '!!raw-loader!@site/src/examples/demo/styles.css';
 ## Demo
 
 <SandBox
+tabIndex={1}
 deps={['@opentf/react-state']}
 code={demo}
 files={{'/store.js': store, '/Header.js': Header, '/Counter.js': counter, '/styles.css': styles}} />

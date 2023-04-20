@@ -1,5 +1,5 @@
 import { memo, useCallback, useState } from 'react';
-import produce from 'immer';
+import { produce } from 'immer';
 import { create } from '@opentf/react-state';
 
 const [useAppState, setAppState] = create({
