@@ -10,6 +10,8 @@
 
 > A shared/global state management library for React.
 
+## [View Demo](https://react-app-state.pages.dev/#demo)
+
 ## Features
 
 - Simple API
@@ -65,37 +67,48 @@ function App() {
 ## Usage (TypeScript)
 
 ```tsx
+import React from 'react';
 import { create } from '@opentf/react-state';
 
 interface AppState {
-  name: string;
-  age: number;
+  isLogin: boolean;
+  user: {
+    id: string;
+    name: string;
+  } | null;
+  theme: string;
 }
 
-const appState: AppState = { name: 'Xyz', age: 25 };
+const appState: AppState = {
+  isLogin: true,
+  user: { id: 'abcdef', name: 'XXX' },
+  theme: 'Dark',
+};
 
 const [useAppState, setAppState, api] = create(appState);
 
 api.subscribe(console.log);
 
-function App() {
-  const state = useAppState((s) => s);
+export default function App() {
+  const { isLogin, user, theme } = useAppState((s) => s);
+
+  function handleLogout() {
+    setAppState((s) => ({ ...s, user: null, isLogin: false }));
+  }
 
   return (
-    <>
-      <p>Name: {state.name}</p>
-      <p>Age: {state.age}</p>
-      <button onClick={() => setAppState((s) => ({ name: '' }))}>
-        Change State
-      </button>
-    </>
+    <div data-theme={theme}>
+      <p>Welcome {isLogin ? user?.name : 'Guest!'}</p>
+      <button onClick={handleLogout}>Logout</button>
+    </div>
   );
 }
+
 ```
 
 ## Documentation
 
-Please visit [https://react-app-state.pages.dev/](https://react-app-state.pages.dev/) for complete documentation.
+Please visit [https://react-app-state.pages.dev/](https://react-app-state.pages.dev/) to get started.
 
 ## License
 
