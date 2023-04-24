@@ -1,5 +1,11 @@
 # @opentf/react-state
 
+## 0.13.1
+
+### Patch Changes
+
+- 6373bf3: Updated readme for usage section.
+
 ## 0.13.0
 
 ### Minor Changes
