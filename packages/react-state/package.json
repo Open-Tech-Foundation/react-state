@@ -17,10 +17,7 @@
   },
   "license": "MIT",
   "homepage": "https://react-app-state.pages.dev",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/open-tech-foundation/react-state.git"
-  },
+  "repository": "git@github.com:Open-Tech-Foundation/react-state.git",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -30,9 +27,6 @@
     "import": "./dist/index.js"
   },
   "sideEffects": false,
-  "engines": {
-    "node": ">=14.0.0"
-  },
   "scripts": {
     "build": "tsup",
     "test": "jest",
@@ -44,7 +38,8 @@
     "dist"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "browserslist": {
     "production": [
@@ -60,7 +55,7 @@
   },
   "devDependencies": {
     "@opentf/eslint-config-base": "^0.1.0",
-    "@opentf/utils": "^0.16.0",
+    "@opentf/utils": "^0.22.0",
     "@swc/core": "^1.3.41",
     "@swc/jest": "^0.2.24",
     "@testing-library/jest-dom": "^5.16.3",
