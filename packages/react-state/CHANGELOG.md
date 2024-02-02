@@ -1,5 +1,11 @@
 # @opentf/react-state
 
+## 0.14.1
+
+### Patch Changes
+
+- 2dcba5a: Updated readme.
+
 ## 0.14.0
 
 ### Minor Changes
