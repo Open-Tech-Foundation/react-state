@@ -1,8 +1,9 @@
+<img align="left" src="https://open-tech-foundation.pages.dev/img/Logo.svg" width="50" height="50">
+
+&nbsp;[OPEN TECH FOUNDATION](https://open-tech-foundation.pages.dev/)
 <div align="center">
 
 # React State
-
-⚡ by [OPEN TECH FOUNDATION](https://open-tech-foundation.pages.dev/)
 
 [![Build](https://github.com/open-tech-foundation/react-state/actions/workflows/build.yml/badge.svg)](https://github.com/open-tech-foundation/react-state/actions/workflows/build.yml)
 
@@ -10,7 +11,7 @@
 
 > A shared/global state management library for React.
 
-## [View Demo](https://react-app-state.pages.dev/#demo)
+# [View Demo](https://react-app-state.pages.dev/#demo) | [Documentation](https://react-app-state.pages.dev/)
 
 ## Features
 
@@ -23,22 +24,20 @@
 
 ## Installation
 
-Using npm
-
 ```shell
 npm install @opentf/react-state
 ```
-
-Using Yarn
 
 ```shell
 yarn add @opentf/react-state
 ```
 
-Using pnpm
-
 ```shell
 pnpm add @opentf/react-state
+```
+
+```shell
+bun add @opentf/react-state
 ```
 
 ## Usage
@@ -104,10 +103,6 @@ export default function App() {
   );
 }
 ```
-
-## Documentation
-
-Please visit [https://react-app-state.pages.dev/](https://react-app-state.pages.dev/) to get started.
 
 ## License
 
