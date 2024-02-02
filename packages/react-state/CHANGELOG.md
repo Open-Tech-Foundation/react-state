@@ -1,5 +1,11 @@
 # @opentf/react-state
 
+## 0.14.0
+
+### Minor Changes
+
+- 81323cc: Added pkg provenance support.
+
 ## 0.13.1
 
 ### Patch Changes
