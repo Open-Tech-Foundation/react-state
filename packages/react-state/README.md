@@ -1,6 +1,7 @@
 <img align="left" src="https://open-tech-foundation.pages.dev/img/Logo.svg" width="50" height="50">
 
 &nbsp;[OPEN TECH FOUNDATION](https://open-tech-foundation.pages.dev/)
+
 <div align="center">
 
 # React State
@@ -9,7 +10,7 @@
 
 </div>
 
-> A shared/global state management library for React.
+> A global state manager for ReactJS.
 
 # [View Demo](https://react-app-state.pages.dev/#demo) | [Documentation](https://react-app-state.pages.dev/)
 

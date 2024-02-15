@@ -1,5 +1,5 @@
 import { useSyncExternalStoreWithSelector } from 'use-sync-external-store/shim/with-selector.js';
-import shallowDiffObjs from './shallowDiffObjs';
+import { isShallowEql } from '@opentf/utils';
 import type { Hook, ListenerFn, SetState, API, SubscribeFn } from './types';
 
 /**
@@ -36,9 +36,7 @@ export default function create<State>(
       () => state,
       () => state,
       () => selector?.(state),
-      config?.shallow
-        ? (a, b) => shallowDiffObjs(a as object, b as object)
-        : undefined
+      config?.shallow ? (a, b) => isShallowEql(a, b) : undefined
     );
 
     return value;
