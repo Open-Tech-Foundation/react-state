@@ -1,5 +1,11 @@
 # @opentf/react-state
 
+## 0.15.0
+
+### Minor Changes
+
+- cc8aaf6: Replaced shallow diff fn from utils.
+
 ## 0.14.1
 
 ### Patch Changes

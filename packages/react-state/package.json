@@ -1,6 +1,6 @@
 {
   "name": "@opentf/react-state",
-  "version": "0.14.1",
+  "version": "0.15.0",
   "description": "A global state manager for ReactJS.",
   "keywords": [
     "react",
