@@ -27,3 +27,4 @@ lib
 
 apps/demo/*
 .turbo
+.next

@@ -7,12 +7,10 @@ import { setAppState, useAppState } from './store';
 import Dummmy from './Dummy';
 
 function App() {
-  const { theme, userName } = useAppState(
-    (s) => ({
-      theme: s.theme,
-      userName: s.app.user.name,
-    })
-  );
+  const { theme, userName } = useAppState((s) => ({
+    theme: s.theme,
+    userName: s.app.user.name,
+  }));
 
   useEffect(() => {
     console.log('App rendered');

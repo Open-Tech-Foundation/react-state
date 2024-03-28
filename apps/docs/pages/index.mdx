@@ -1,0 +1,61 @@
+import { Tabs, Callout } from "nextra/components";
+
+# Introduction
+
+> A global state manager for React.
+
+## Features
+
+- Simple API
+- Mutable State Updates
+- No Context Providers
+- Auto Shallow Diff Computed Props
+- TypeScript Support
+
+## Installation
+
+<Tabs items={["pnpm", "npm", "yarn", "bun"]}>
+  <Tabs.Tab>
+  ```sh copy 
+  pnpm add @opentf/react-state 
+  ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+      ```sh copy 
+  npm install @opentf/react-state 
+  ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+  ```sh copy 
+  yarn add @opentf/react-state 
+  ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+  ```sh copy 
+  bun add @opentf/react-state 
+  ```
+  </Tabs.Tab>
+</Tabs>
+
+## Usage
+
+```jsx
+import { create } from '@opentf/react-state';
+
+const { useAppState, setAppState, api } = create({ count: 0 });
+
+api.subscribe(console.log);
+
+export default function App() {
+  const count = useAppState((s) => s.count);
+
+  return (
+    <>
+      <p>Count: {count}</p>
+      <button onClick={() => setAppState((s) => { s.count++ })}>
+        Increment
+      </button>
+    </>
+  );
+}
+```
