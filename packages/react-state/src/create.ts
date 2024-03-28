@@ -1,27 +1,33 @@
 import { useSyncExternalStoreWithSelector } from 'use-sync-external-store/shim/with-selector.js';
-import { isShallowEql } from '@opentf/utils';
-import type { Hook, ListenerFn, SetState, API, SubscribeFn } from './types';
+import { Draft, createDraft, finishDraft } from 'immer';
+import { clone, isFn, isShallowEql, shallowMerge } from '@opentf/std';
+import type { ListenerFn, SetStateVal, Selector } from './types';
 
 /**
- * It creates a store with initial values.
+ * Creates a store with initial value.
  */
-export default function create<State>(
-  initialState: State
-): [Hook<State>, SetState<State>, API<State>] {
-  let state: State & Partial<State> = { ...initialState };
-  const listerners = new Set<ListenerFn<State>>();
+export default function create<T>(initialState: T) {
+  let state = clone(initialState);
+  const listerners = new Set<ListenerFn<T>>();
 
-  const setState: SetState<State> = async (obj, replace = false) => {
-    const objValue = typeof obj === 'function' ? await obj(state) : obj;
-    state = replace ? (objValue as State) : Object.assign({}, state, objValue);
+  const setState = async (val: SetStateVal<T>, replace = false) => {
+    let nextState;
+    if (isFn(val)) {
+      const draft = createDraft(state as object);
+      await val(draft as Draft<T>);
+      nextState = finishDraft(draft);
+    } else {
+      nextState = val;
+    }
+    state = replace
+      ? (nextState as T)
+      : (shallowMerge(state as object, nextState) as T);
     listerners.forEach((l) => l(state));
   };
 
-  const getState = () => {
-    return state;
-  };
+  const getState = () => state;
 
-  const subscribe: SubscribeFn<State> = (lf: ListenerFn<State>) => {
+  const subscribe = (lf: ListenerFn<T>) => {
     listerners.add(lf);
     return () => listerners.delete(lf);
   };
@@ -30,24 +36,36 @@ export default function create<State>(
     listerners.clear();
   };
 
-  const useStateHook: Hook<State> = (selector, config) => {
+  function useStateHook<ST extends T, RT>(selector: Selector<ST, RT>) {
     const value = useSyncExternalStoreWithSelector(
       subscribe,
       () => state,
       () => state,
-      () => selector?.(state),
-      config?.shallow ? (a, b) => isShallowEql(a, b) : undefined
+      () => selector?.(state as ST) as RT,
+      (a, b) => isShallowEql(a, b)
     );
 
     return value;
-  };
+  }
 
-  const api: API<State> = {
+  const api = {
+    /** Returns the current state */
     get: getState,
+    /** Merge or replace values in the state */
     set: setState,
+    /** Resets the current state to the initial state */
+    reset: (newState?: T) => {
+      setState(clone(newState ?? initialState), true);
+    },
+    /** Subscribes to the state, called on every state change */
     subscribe,
+    /** It removes all listeners */
     destroy,
   };
 
-  return [useStateHook, setState, api];
+  return {
+    useAppState: useStateHook,
+    setAppState: setState,
+    api,
+  };
 }

@@ -1,4 +1,10 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  act,
+} from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import { create } from '../src';
@@ -42,6 +48,7 @@ describe('create with API', () => {
       );
     };
     render(<App />);
+    expect(renderCount).toBe(2);
     expect(api.get()).toEqual({ counter: 0 });
     expect(screen.getByText(/Counter: 0/)).toBeInTheDocument();
     fireEvent.click(screen.getByText('Increment'));
@@ -52,20 +59,22 @@ describe('create with API', () => {
     expect(api.get()).toEqual({ counter: 1 });
 
     const unSub = api.subscribe(console.log);
-    api.set({ counter: api.get().counter + 1 });
+    act(() => {
+      api.set({ counter: api.get().counter + 1 });
+    });
     await waitFor(() => {
       expect(api.get()).toEqual({ counter: 2 });
     });
     await waitFor(() => {
       expect(screen.getByText(/Counter: 2/)).toBeInTheDocument();
-      expect(renderCount).toBe(5);
+      expect(renderCount).toBe(4);
     });
     unSub();
     api.destroy();
     fireEvent.click(screen.getByText('Increment'));
     await waitFor(() => {
       expect(screen.getByText(/Counter: 2/)).toBeInTheDocument();
-      expect(renderCount).toBe(5);
+      expect(renderCount).toBe(4);
     });
   });
 });
