@@ -7,5 +7,7 @@
     "website": "0.0.0",
     "@opentf/react-state": "0.15.0"
   },
-  "changesets": []
+  "changesets": [
+    "nasty-plants-push"
+  ]
 }
