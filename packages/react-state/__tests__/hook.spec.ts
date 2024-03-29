@@ -1,5 +1,4 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
-import produce from 'immer';
 
 import { create } from '../src';
 
@@ -16,7 +15,7 @@ const state: State = {
   user: { id: 'abc' },
   fruits: ['Apple', 'Mango', 'Orange'],
 };
-const [useAppState, setState] = create(state);
+const { useAppState, setAppState } = create(state);
 
 describe('Hook', () => {
   test('With null selector', () => {
@@ -55,7 +54,7 @@ describe('Hook', () => {
     const { result } = renderHook(() => useAppState((s) => s.theme));
     expect(result.current).toEqual('Dark');
     act(() => {
-      setState({ theme: 'Light' });
+      setAppState({ theme: 'Light' });
     });
     expect(result.current).toEqual('Light');
   });
@@ -64,24 +63,21 @@ describe('Hook', () => {
     const { result } = renderHook(() => useAppState((s) => s.count));
     expect(result.current).toEqual(5);
     act(() => {
-      setState((s) => ({
-        count: s.count + 1,
-      }));
+      setAppState((s) => {
+        s.count = s.count + 1;
+      });
     });
     await waitFor(() => expect(result.current).toEqual(6));
   });
 
   test('Shallow diff', async () => {
     const { result } = renderHook(() =>
-      useAppState((s) => ({ user: s.user, fruits: s.fruits }), {
-        set: true,
-        shallow: true,
-      })
+      useAppState((s) => ({ user: s.user, fruits: s.fruits }))
     );
     act(() => {
-      setState?.((s) => ({
-        fruits: [...s.fruits, 'Banana'],
-      }));
+      setAppState?.((s) => {
+        s.fruits.push('Banana');
+      });
     });
 
     await waitFor(() =>
@@ -90,23 +86,5 @@ describe('Hook', () => {
         fruits: [...state.fruits, 'Banana'],
       })
     );
-  });
-
-  test('Repalce state with immer', async () => {
-    const { result } = renderHook(() => useAppState((s) => s.user));
-
-    expect(result.current).toBe(state.user);
-
-    act(() => {
-      setState(
-        (s) =>
-          produce(s, (draft) => {
-            delete draft.user;
-          }),
-        true
-      );
-    });
-
-    await waitFor(() => expect(result.current).toBeUndefined());
   });
 });

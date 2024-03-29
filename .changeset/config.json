@@ -7,5 +7,6 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["website"]
+  "ignore": ["website", "docs", "play"],
+  "privatePackages": false
 }

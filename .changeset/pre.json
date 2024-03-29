@@ -1,0 +1,11 @@
+{
+  "mode": "pre",
+  "tag": "next",
+  "initialVersions": {
+    "docs": "1.0.0",
+    "play": "0.0.0",
+    "website": "0.0.0",
+    "@opentf/react-state": "0.15.0"
+  },
+  "changesets": []
+}

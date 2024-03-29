@@ -1,13 +1,12 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import produce from 'immer';
 
 import { create } from '../src';
 
 describe('create', () => {
   test('Set state only hook fn', async () => {
     let renderCount = 0;
-    const [useAppState, setState] = create({ counter: 0 });
+    const { useAppState, setAppState } = create({ counter: 0 });
     const Counter = () => {
       renderCount++;
       const counter = useAppState((s) => s.counter);
@@ -26,7 +25,9 @@ describe('create', () => {
         <div>
           <button
             onClick={() =>
-              setState((state) => ({ counter: state.counter + 1 }))
+              setAppState((state) => {
+                state.counter++;
+              })
             }
           >
             Increment
@@ -40,7 +41,7 @@ describe('create', () => {
 
       return (
         <div>
-          <button onClick={() => setState({ counter: 0 })}>Reset</button>
+          <button onClick={() => setAppState({ counter: 0 })}>Reset</button>
         </div>
       );
     };
@@ -69,7 +70,7 @@ describe('create', () => {
   });
 
   it('Displays the initial value', () => {
-    const [useAppState] = create({ counter: 0 });
+    const { useAppState } = create({ counter: 0 });
 
     const App = () => {
       const counter = useAppState((state) => state.counter);
@@ -84,7 +85,7 @@ describe('create', () => {
   });
 
   it('Fetches everything from the state', () => {
-    const [useAppState] = create({
+    const { useAppState } = create({
       user: { name: 'xxx' },
       theme: 'Dark',
       settings: { lang: 'en-us' },
@@ -107,7 +108,7 @@ describe('create', () => {
   });
 
   it('Changes the initial value', async () => {
-    const [useAppState, setAppState] = create({ counter: 0 });
+    const { useAppState, setAppState } = create({ counter: 0 });
     const App = () => {
       const counter = useAppState((state) => state.counter);
 
@@ -116,7 +117,9 @@ describe('create', () => {
           <div>Counter: {counter}</div>
           <button
             onClick={() =>
-              setAppState((state) => ({ counter: state.counter + 1 }))
+              setAppState((state) => {
+                state.counter++;
+              })
             }
           >
             Increment
@@ -133,7 +136,7 @@ describe('create', () => {
   });
 
   test('The same state value in two components using the hook', async () => {
-    const [useAppState, setAppState] = create({ counter: 0 });
+    const { useAppState, setAppState } = create({ counter: 0 });
     const Counter = () => {
       const counter = useAppState((state) => state.counter);
       return (
@@ -141,7 +144,9 @@ describe('create', () => {
           <div>Counter: {counter}</div>
           <button
             onClick={() =>
-              setAppState((state) => ({ counter: state.counter + 1 }))
+              setAppState((state) => {
+                state.counter++;
+              })
             }
           >
             Increment
@@ -175,7 +180,7 @@ describe('create', () => {
   test('Rendering only the component that selected values changed', async () => {
     let renderCount = 0;
 
-    const [useAppState, setAppState] = create({
+    const { useAppState, setAppState } = create({
       counter: 0,
       user: { name: 'xxx', signin: true },
     });
@@ -188,7 +193,9 @@ describe('create', () => {
           <div>Counter: {counter}</div>
           <button
             onClick={() =>
-              setAppState((state) => ({ counter: state.counter + 1 }))
+              setAppState((state) => {
+                state.counter++;
+              })
             }
           >
             Increment
@@ -205,9 +212,9 @@ describe('create', () => {
           <div>{user.signin ? `Welcome ${user.name}` : 'Welcome Guest'}</div>
           <button
             onClick={() =>
-              setAppState((state) => ({
-                user: { ...state.user, signin: false },
-              }))
+              setAppState((state) => {
+                state.user.signin = false;
+              })
             }
           >
             Logout
@@ -242,7 +249,7 @@ describe('create', () => {
   });
 
   it('Constructs a single object with multiple state-picks', () => {
-    const [useAppState] = create({
+    const { useAppState } = create({
       products: { mobiles: ['M1', 'M2'], laptops: ['L1'] },
     });
 
@@ -275,7 +282,7 @@ describe('create', () => {
 
   test('Shallow diff single array for multiple state-picks', async () => {
     let renderCount = 0;
-    const [useAppState, setState] = create({
+    const { useAppState, setAppState } = create({
       settings: { theme: 'Dark' },
       products: { mobiles: ['M1', 'M2'], laptops: ['L1'] },
     });
@@ -283,10 +290,10 @@ describe('create', () => {
     const Products = () => {
       renderCount++;
 
-      const [mobiles, laptops] = useAppState(
-        (s) => [s.products.mobiles, s.products.laptops],
-        { shallow: true }
-      );
+      const [mobiles, laptops] = useAppState((s) => [
+        s.products.mobiles,
+        s.products.laptops,
+      ]);
       return (
         <div>
           <ul>
@@ -309,30 +316,22 @@ describe('create', () => {
         <div>
           <button
             onClick={() =>
-              setState(
-                (s) =>
-                  produce(s, (draft) => {
-                    draft.products.mobiles.push(
-                      'M' + Math.random().toString().slice(-10, -5)
-                    );
-                  }),
-                true
-              )
+              setAppState((s) => {
+                s.products.mobiles.push(
+                  'M' + Math.random().toString().slice(-10, -5)
+                );
+              }, true)
             }
           >
             Add Mobile
           </button>
           <button
             onClick={() =>
-              setState(
-                (s) =>
-                  produce(s, (draft) => {
-                    draft.products.laptops.push(
-                      'L' + Math.random().toString().slice(-10, -5)
-                    );
-                  }),
-                true
-              )
+              setAppState((s) => {
+                s.products.laptops.push(
+                  'L' + Math.random().toString().slice(-10, -5)
+                );
+              }, true)
             }
           >
             Add Laptop
@@ -350,11 +349,10 @@ describe('create', () => {
           Theme: {settings.theme}{' '}
           <button
             onClick={() =>
-              setState((s) => ({
-                settings: {
-                  theme: s.settings.theme === 'Dark' ? 'Light' : 'Dark',
-                },
-              }))
+              setAppState((s) => {
+                s.settings.theme =
+                  s.settings.theme === 'Dark' ? 'Light' : 'Dark';
+              })
             }
           >
             Toggle
@@ -402,28 +400,24 @@ describe('create', () => {
       settings: { theme: string };
       user?: { name: string };
     }
-    const [useAppState, setAppState] = create<State>({
+    const { useAppState, setAppState } = create<State>({
       settings: { theme: 'Dark' },
       user: { name: 'xxx' },
     });
     const App = () => {
-      const { settings, user } = useAppState(
-        (s) => ({ settings: s.settings, user: s.user }),
-        { shallow: true }
-      );
+      const { settings, user } = useAppState((s) => ({
+        settings: s.settings,
+        user: s.user,
+      }));
       return (
         <>
           <div>Theme: {settings.theme}</div>
           <div>{user ? `Welcome ${user.name}` : 'Welcome Guest'}</div>
           <button
             onClick={() =>
-              setAppState(
-                (s) =>
-                  produce(s, (draft) => {
-                    delete draft.user;
-                  }),
-                true
-              )
+              setAppState((s) => {
+                delete s.user;
+              }, true)
             }
           >
             Logout
@@ -444,10 +438,10 @@ describe('create', () => {
     interface State {
       counter: number;
     }
-    const [useCounterState, set] = create<State>({ counter: 0 });
+    const { useAppState, setAppState } = create<State>({ counter: 0 });
 
     function Counter() {
-      const counter = useCounterState((state) => state.counter);
+      const counter = useAppState((state) => state.counter);
 
       const increment = (value: number): Promise<number> => {
         return new Promise((resolve) => {
@@ -460,7 +454,9 @@ describe('create', () => {
           <div>Counter: {counter}</div>
           <button
             onClick={() =>
-              set(async (s) => ({ counter: await increment(s.counter) }))
+              setAppState(async (s) => {
+                s.counter = await increment(s.counter);
+              })
             }
           >
             +1

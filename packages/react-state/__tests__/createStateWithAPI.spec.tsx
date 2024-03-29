@@ -12,7 +12,7 @@ import { create } from '../src';
 describe('create with API', () => {
   test('State API', async () => {
     let renderCount = 0;
-    const [useAppState, setState, api] = create({ counter: 0 });
+    const { useAppState, setAppState, api } = create({ counter: 0 });
     const Counter = () => {
       renderCount++;
       const counter = useAppState((s) => s.counter);
@@ -30,7 +30,9 @@ describe('create with API', () => {
         <div>
           <button
             onClick={() =>
-              setState((state) => ({ counter: state.counter + 1 }))
+              setAppState((state) => {
+                state.counter = state.counter + 1;
+              })
             }
           >
             Increment

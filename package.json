@@ -1,13 +1,12 @@
 {
   "private": true,
   "scripts": {
-    "dev": "turbo run build --filter=react-state -- --watch",
-    "dev:web": "turbo run start --filter=website",
+    "dev:docs": "turbo run dev --filter=docs",
     "test": "turbo run test --filter=react-state",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo run lint --filter=react-state",
     "build": "turbo run build --filter=react-state",
-    "build:website": "turbo run build --filter=website",
+    "build:docs": "turbo run build --filter=docs",
     "ci": "turbo run ci --filter=react-state",
     "prepare": "husky install",
     "publish-packages": "turbo run build lint test --filter=react-state && changeset version && changeset publish"
