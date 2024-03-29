@@ -1,4 +1,9 @@
 import { Tabs, Callout } from "nextra/components";
+import { SandBox } from '@opentf/react-sandbox';
+import demo from '!!raw-loader!../examples/demo/index';
+import store from '!!raw-loader!../examples/demo/store';
+import Header from '!!raw-loader!../examples/demo/Header';
+import counter from '!!raw-loader!../examples/demo/Counter';
 
 # Introduction
 
@@ -59,3 +64,12 @@ export default function App() {
   );
 }
 ```
+
+## Demo
+<SandBox
+  tabIndex={1}
+  deps={['@opentf/react-state@next']}
+  code={demo}
+  files={{'/store.js': store, '/Header.js': Header, '/Counter.js': counter}}
+  cdns={['https://cdn.tailwindcss.com', 'https://cdn.jsdelivr.net/npm/daisyui@4.9.0/dist/full.min.css']}
+/>
