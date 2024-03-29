@@ -1,5 +1,11 @@
 # @opentf/react-state
 
+## 0.16.0-next.0
+
+### Minor Changes
+
+- 26bbc5a: Releasing next version for local docs dev.
+
 ## 0.15.0
 
 ### Minor Changes
