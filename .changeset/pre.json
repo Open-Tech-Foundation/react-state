@@ -1,5 +1,5 @@
 {
-  "mode": "pre",
+  "mode": "exit",
   "tag": "next",
   "initialVersions": {
     "docs": "1.0.0",
@@ -7,7 +7,5 @@
     "website": "0.0.0",
     "@opentf/react-state": "0.15.0"
   },
-  "changesets": [
-    "nasty-plants-push"
-  ]
+  "changesets": ["nasty-plants-push"]
 }

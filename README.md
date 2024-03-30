@@ -10,18 +10,21 @@
 
 </div>
 
-> A global state manager for ReactJS.
+> A global state manager for React.
+
+<div align="center">
 
 # [View Demo](https://react-app-state.pages.dev/#demo) | [Documentation](https://react-app-state.pages.dev/)
+
+</div>
 
 ## Features
 
 - Simple API
-- No context providers
-- Components are re-rendered only when the selector value changes
-- It can shallow diff custom selector objects
-- It supports async actions
-- TypeScript support
+- Mutable State Updates
+- No Context Providers
+- Auto Shallow Diff Computed Props
+- TypeScript Support
 
 ## Installation
 
@@ -46,64 +49,39 @@ bun add @opentf/react-state
 ```jsx
 import { create } from '@opentf/react-state';
 
-const [useAppState, setAppState, api] = create({ count: 0 });
+const { useAppState, setAppState, api } = create({ count: 0 });
 
 api.subscribe(console.log);
 
-function App() {
+export default function App() {
   const count = useAppState((s) => s.count);
 
   return (
     <>
       <p>Count: {count}</p>
-      <button onClick={() => setAppState((s) => ({ count: s.count + 1 }))}>
-        Change State
+      <button
+        onClick={() =>
+          setAppState((s) => {
+            s.count++;
+          })
+        }
+      >
+        Increment
       </button>
     </>
   );
 }
 ```
 
-## Usage (TypeScript)
+## Related
 
-```tsx
-import React from 'react';
-import { create } from '@opentf/react-state';
+- [@opentf/react-form](https://react-form.pages.dev/) - A simple form state manager for React.
 
-interface AppState {
-  isLogin: boolean;
-  user: {
-    id: string;
-    name: string;
-  } | null;
-  theme: string;
-}
+- [@opentf/react-sandbox](https://github.com/Open-Tech-Foundation/react-sandbox) - The CodeSandbox sandpack wrapper with additional features.
 
-const appState: AppState = {
-  isLogin: true,
-  user: { id: 'abcdef', name: 'XXX' },
-  theme: 'Dark',
-};
+- [@opentf/react-node-repl](https://node-repl.pages.dev/) - The Node.js REPL in a React component.
 
-const [useAppState, setAppState, api] = create(appState);
-
-api.subscribe(console.log);
-
-export default function App() {
-  const { isLogin, user, theme } = useAppState((s) => s);
-
-  function handleLogout() {
-    setAppState((s) => ({ ...s, user: null, isLogin: false }));
-  }
-
-  return (
-    <div data-theme={theme}>
-      <p>Welcome {isLogin ? user?.name : 'Guest!'}</p>
-      <button onClick={handleLogout}>Logout</button>
-    </div>
-  );
-}
-```
+- [@opentf/std](https://js-std.pages.dev/) - An Extensive JavaScript Standard Library.
 
 ## License
 
