@@ -1,0 +1,36 @@
+import { Callout } from 'nextra/components'
+
+> The components can be bound to the store using the `useAppState` hook from the `create` function.
+
+Pass a `selector` function to select some or all store values.
+
+<Callout type="info" emoji="✅">
+  The components are re-rendered only when the selector values changes.
+</Callout>
+
+```jsx copy
+const state = useAppState(s => s)
+```
+## Slicing multiple values
+
+You can select multiple values from the store.
+
+```jsx copy
+const { a, b, c } = useAppState(s => ({ a: s.a, b: s.b, c: s.c }))
+```
+
+Selecting values to an array.
+
+```jsx copy
+const [x, y] = useAppState(s => ([ s.x, s.y ]))
+```
+
+## Computed Properties
+
+Your components can `watch` for the `computed` props from the store.
+
+```jsx copy
+const { useAppState } = create({ user: { firstName: 'First', lastName: 'Last' } });
+
+const fullName = useAppState(s => (s.user.firstName + ' ' + s.user.lastName))
+```

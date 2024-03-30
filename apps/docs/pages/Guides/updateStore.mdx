@@ -1,0 +1,65 @@
+import { Callout } from 'nextra/components'
+
+> The store can be updated using the `setAppState` function from the `create` function.
+
+<Callout type="info">
+  The `React` components expects the state updates must be immutable.
+</Callout>
+
+<Callout type="info" emoji="✅">
+  This lib lets you update the state in a `mutable` way to avoid manual merging like using the `...` spread opertor.
+</Callout>
+
+The store can be updated in two ways:
+
+## Passing an object
+
+You can pass an object for flat updates. The values will be `merged` into the store.
+
+```jsx copy
+const { setAppState } = create({ a: 1, b: 2, c: 3 });
+
+<button onClick={() => setAppState({ b: 5 })}>
+  Change
+</button>  
+```
+
+## Passing a function
+
+You can pass a function to update the state deeply. 
+
+<Callout type="default">
+  The function can be `Sync` or `Async`.
+</Callout>
+
+```jsx copy
+const { setAppState } = create({ some: { deep: { obj: { count: 0 } } } });
+
+<button onClick={() => setAppState((s) => { s.some.deep.obj.count++ })}>
+  Increment
+</button>  
+```
+<Callout type="info">
+  Internally, the deep state updates are done with the help of [immer](https://immerjs.github.io/immer/) lib.
+</Callout>
+
+<Callout type="warning" emoji="⚠️">
+  The deep updates must follow the immer [Update Patterns](https://immerjs.github.io/immer/update-patterns) and should be aware of these [pitfals](https://immerjs.github.io/immer/pitfalls).
+</Callout>
+
+## Replacing the state
+
+To replace an object instead of merging, pass `true` value to the second argument of the `setAppState()`.
+
+```jsx copy
+const { useAppState, setAppState } = create({ a: 1, b: 2, c: 3 });
+
+const keys = useAppState(s => Object.keys(s))
+console.log(keys); //=> ['a', 'b', 'c']
+
+<button onClick={() => setAppState({ a: 0, c: 5 }, true)}>
+  Replace
+</button>
+
+console.log(keys); //=> ['a', 'c']
+```

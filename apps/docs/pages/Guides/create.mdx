@@ -1,0 +1,24 @@
+import { Callout } from 'nextra/components'
+
+> The store can be created using the `create` function.
+
+```jsx copy
+import { create } from '@opentf/react-state';
+```
+
+## Init
+
+Pass an object to initialize the store.
+
+```jsx copy
+const State = {};
+const { useAppState, setAppState, api } = create(State);
+```
+
+<Callout type="info">
+  It is recommended to create a store with the `plain` JS object.
+</Callout>
+
+<Callout>
+You can create multiple stores for your app.
+</Callout>

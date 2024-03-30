@@ -1,5 +1,5 @@
 import { Tabs, Callout } from "nextra/components";
-import { SandBox } from '@opentf/react-sandbox';
+import ReactSandBox from '../components/ReactSandbox';
 import demo from '!!raw-loader!../examples/demo/index';
 import store from '!!raw-loader!../examples/demo/store';
 import Header from '!!raw-loader!../examples/demo/Header';
@@ -66,10 +66,18 @@ export default function App() {
 ```
 
 ## Demo
-<SandBox
-  tabIndex={1}
+<ReactSandBox
+  layout="Tabs"
   deps={['@opentf/react-state@next']}
   code={demo}
   files={{'/store.js': store, '/Header.js': Header, '/Counter.js': counter}}
   cdns={['https://cdn.tailwindcss.com', 'https://cdn.jsdelivr.net/npm/daisyui@4.9.0/dist/full.min.css']}
 />
+
+## Related
+
+- [@opentf/react-form](https://react-form.pages.dev/) - A simple form state manager for React.
+
+- [@opentf/react-sandbox](https://github.com/Open-Tech-Foundation/react-sandbox) - The CodeSandbox sandpack wrapper with additional features.
+
+- [@opentf/std](https://js-std.pages.dev/) - An Extensive JavaScript Standard Library.

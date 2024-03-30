@@ -1,0 +1,19 @@
+import { Callout } from 'nextra/components'
+
+> The store can be reset to its initial value or with the new state.
+
+```jsx copy
+const initialValue = {a: 'a', b: 'b'}
+
+const { api } = create(initialValue);
+
+api.reset()
+```
+
+You can reset the current state to an entirely new state by passing an argument to the function.
+
+```jsx copy
+const newState = {c: 'c', d: 'd'}
+
+api.reset(newState)
+```

@@ -1,0 +1,10 @@
+import ReactSandBox from '../../components/ReactSandbox';
+
+import code from '!!raw-loader!../../examples/async/index';
+
+<ReactSandBox
+  deps={['@opentf/react-state@next', '@opentf/std', '@opentf/react-form']} 
+  code={code} 
+  cdns={['https://cdn.tailwindcss.com', 'https://cdn.jsdelivr.net/npm/daisyui@4.9.0/dist/full.min.css']}
+  layout='Tabs'
+/>

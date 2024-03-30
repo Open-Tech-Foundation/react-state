@@ -1,0 +1,64 @@
+import { Callout } from 'nextra/components'
+
+> Creates a global store with the given initial value.
+
+## Syntax
+
+```js copy
+create<T>(initialState: T): {
+    useAppState: <ST extends T, RT>(selector: Selector<ST, RT>) => RT;
+    setAppState: (val: SetStateVal<T>, replace?: boolean) => Promise<void>;
+    api: {
+        /** Returns the current state */
+        get: () => T;
+        /** Merge or replace values in the state */
+        set: (val: SetStateVal<T>, replace?: boolean) => Promise<void>;
+        /** Resets the current state to the initial state */
+        reset: (newState?: T) => void;
+        /** Subscribes to the state, called on every state change */
+        subscribe: (lf: ListenerFn<T>) => () => boolean;
+        /** It removes all listeners */
+        destroy: () => void;
+    };
+};
+```
+
+### useAppState()
+
+The `hook` function, used to bind components to the store and expects a `selector` function.
+
+The `selector` function to select some or all store values.
+
+```jsx copy
+const state = useAppState(s => s)
+
+const {a, b, c} = useAppState(s => ({ a: s.a, b: s.b, c: s.c}))
+
+const [x, y] = useAppState(s => ([s.x, s.y]))
+```
+
+### setAppState()
+
+Pass an object for flat updates. The values will be `merged` into the store.
+ 
+ ```jsx copy
+const { setAppState } = create({ a: 1, b: 2, c: 3 });
+
+setAppState({ b: 5 })
+```
+
+Pass a function to update deep state values.
+
+<Callout type="default">
+  The function can be `Sync` or `Async`.
+</Callout>
+
+```jsx copy
+const { setAppState } = create({ some: { deep: { obj: { count: 0 } } } });
+
+setAppState((s) => { s.some.deep.obj.count++ })
+```
+
+### api
+
+The store API object with all the methods to access, change, subscribe and reset the store.
