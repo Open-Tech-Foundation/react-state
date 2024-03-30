@@ -1,5 +1,12 @@
 # @opentf/react-state
 
+## 0.16.0
+
+### Minor Changes
+
+- a8b9514: Made store updates mutable using immer.
+- 26bbc5a: Releasing next version for local docs dev.
+
 ## 0.16.0-next.0
 
 ### Minor Changes
